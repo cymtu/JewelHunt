@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import org.jewelhunt.controllers.Controller;
-import org.jewelhunt.utils.LoadImages;
 
 public class ViewApp extends Region {
 
@@ -15,7 +14,7 @@ public class ViewApp extends Region {
     public ViewApp(Controller controller) {
         canvas = new Canvas();
         getChildren().add(canvas);
-        setOnMouseClicked(mouseEvent -> controller.setOnMouseClicked(mouseEvent));
+        setOnMouseClicked(controller::setOnMouseClicked);
     }
 
     public void setHeightCanvas(double v) {
@@ -35,7 +34,7 @@ public class ViewApp extends Region {
 
     public void strokeText(String s, int size_image, int line, int column) {
         GraphicsContext graphicsContext2D = canvas.getGraphicsContext2D();
-        graphicsContext2D.strokeText(s, size_image * column + size_image / 2, size_image * line + size_image / 2);
+        graphicsContext2D.strokeText(s, size_image * column + (double) size_image / 2, size_image * line + (double) size_image / 2);
     }
 
     public void strokeText(String s, double v, double v1) {

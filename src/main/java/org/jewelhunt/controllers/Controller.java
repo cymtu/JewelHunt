@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import org.jewelhunt.App;
+import javafx.stage.Stage;
 import org.jewelhunt.model.BoardTypes;
 import org.jewelhunt.model.Game;
 import org.jewelhunt.model.GameTypes;
@@ -13,23 +13,32 @@ import org.jewelhunt.model.Jewels;
 import org.jewelhunt.ui.AboutView;
 import org.jewelhunt.ui.ParametersView;
 import org.jewelhunt.ui.ViewApp;
+import org.jewelhunt.ui.WindowApp;
 import org.jewelhunt.utils.LoadImages;
 import org.jewelhunt.utils.ResourceMessage;
 
 public class Controller {
     private final Game game;
 
-    private final App app;
+    private final WindowApp windowApp;
+
+    private final Stage stage;
 
     private final ResourceMessage resourceMessage;
 
     private boolean sellIsAlreadyOpen = false;
 
-    public Controller(App app, Game game) {
-        this.app = app;
-        this.game = game;
+    public Controller(Stage stage) {
+        this.stage = stage;
         resourceMessage = new ResourceMessage();
+        this.game = new Game();
+        this.windowApp = new WindowApp(this);
         LoadImages.load();
+        newGame();
+    }
+
+    public WindowApp getWindowApp() {
+        return windowApp;
     }
 
     public String getMessage(String key) {
@@ -78,7 +87,11 @@ public class Controller {
 
     public void newGame(){
         game.newGame();
-        app.newGame();
+        ViewApp viewApp = windowApp.getViewApp();
+        viewApp.setHeightCanvas(LoadImages.SIZE_IMAGE * game.getLines());
+        viewApp.setWidthCanvas(LoadImages.SIZE_IMAGE * game.getColumns());
+        stage.sizeToScene();
+        stage.centerOnScreen();
         outputGameState();
         render();
     }
@@ -101,7 +114,7 @@ public class Controller {
 
         s += getMessage("Controller.Move") + game.getNumberMoves() + " " + getMessage("Controller.Score") + game.getScorePlayer() + "/" + game.getScoreAi();
 
-        app.setBottomText(s);
+        windowApp.setBottomText(s);
     }
 
     public void render(){
@@ -111,7 +124,7 @@ public class Controller {
             }
         }
 
-        ViewApp viewApp = app.getViewApp();
+        ViewApp viewApp = windowApp.getViewApp();
         int[] minMax = game.getMinMax();
         for(int i = 0; i < game.getLines(); i++){
             for(int j = 0; j < game.getColumns(); j++){
@@ -156,7 +169,7 @@ public class Controller {
     }
 
     private void drawCellOpen(int line, int column) {
-        ViewApp viewApp = app.getViewApp();
+        ViewApp viewApp = windowApp.getViewApp();
         viewApp.drawImage(LoadImages.OPEN, LoadImages.SIZE_IMAGE, line, column);
 
         if(game.getJewel(line, column) != Jewels.Empty) {
@@ -166,7 +179,7 @@ public class Controller {
     }
 
     private void drawCellClosed(int line, int column) {
-        ViewApp viewApp = app.getViewApp();
+        ViewApp viewApp = windowApp.getViewApp();
         viewApp.drawImage(LoadImages.CLOSED, LoadImages.SIZE_IMAGE, line, column);
 
         if(game.isMark(line, column)) {
