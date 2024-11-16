@@ -4,15 +4,17 @@ import javafx.scene.input.MouseButton;
 
 public class Game {
     private Board board;
-    private GameTypes type;
+    private GameTypes gameTypes;
     private GameStatus status;
     private BoardTypes boardTypes;
     private AI ai;
     private int numberMoves;
     private int scorePlayer;
     private int scoreAi;
+    private boolean showBestMoves;
 
     public Game() {
+        ai = new AI();
         init();
     }
 
@@ -20,16 +22,24 @@ public class Game {
         return board;
     }
 
-    private void init() {
+    public void init() {
         boardTypes = BoardTypes.Small;
-        type = GameTypes.PlayWithAI;
+        gameTypes = GameTypes.PlayWithAI;
         board = new Board(boardTypes);
-        ai = new AI();
+        showBestMoves = true;
         newGame();
     }
 
-    public GameTypes getType() {
-        return type;
+    public void init(GameTypes gameTypes, BoardTypes boardTypes) {
+        this.boardTypes = boardTypes;
+        this.gameTypes = gameTypes;
+        board = new Board(boardTypes);
+        showBestMoves = true;
+        newGame();
+    }
+
+    public GameTypes getGameTypes() {
+        return gameTypes;
     }
 
     public boolean isGameOver() {
@@ -106,5 +116,34 @@ public class Game {
 
     public int getScoreAi() {
         return scoreAi;
+    }
+
+    public boolean isShowBestMoves() {
+        return showBestMoves;
+    }
+
+    public void setShowBestMoves(boolean showBestMoves) {
+        this.showBestMoves = showBestMoves;
+    }
+
+    public double[][] getBestMoves(Board board) {
+        int[][] visible = ai.getVisible(board);
+        return ai.getCalculation(visible, board);
+    }
+
+    public BoardTypes getBoardTypes() {
+        return boardTypes;
+    }
+
+    public void setGameTypes(GameTypes gameTypes) {
+        this.gameTypes = gameTypes;
+    }
+
+    public void setBoardTypes(BoardTypes boardTypes) {
+        this.boardTypes = boardTypes;
+    }
+
+    public int[] getMinMax() {
+        return board.getMinMax();
     }
 }

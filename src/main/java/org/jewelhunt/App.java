@@ -20,8 +20,12 @@ public class App extends Application {
     private BottomApp bottomApp;
     private Game game;
 
+    private Stage stage;
+
     @Override
     public void start(Stage stage) {
+
+        this.stage = stage;
 
         this.game = new Game();
 
@@ -53,6 +57,8 @@ public class App extends Application {
     public void newGame(){
         viewApp.setHeightCanvas(LoadImages.SIZE_IMAGE * game.getLines());
         viewApp.setWidthCanvas(LoadImages.SIZE_IMAGE * game.getColumns());
+        stage.sizeToScene();
+        stage.centerOnScreen();
     }
 
     public ViewApp getViewApp() {

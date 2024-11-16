@@ -17,7 +17,7 @@ public class AI {
         return findBestSolution(calculation);
     }
 
-    private int[][] getVisible(Board board) {
+    public int[][] getVisible(Board board) {
         BoardTypes boardTypes = board.getBoardTypes();
         int[][] visible = new int[boardTypes.getLines()][boardTypes.getColumns()];
         for(int c = 0; c < boardTypes.getColumns(); c++){
@@ -37,7 +37,7 @@ public class AI {
         return visible;
     }
 
-    private double[][] getCalculation(int[][] visible, Board board) {
+    public double[][] getCalculation(int[][] visible, Board board) {
         BoardTypes boardTypes = board.getBoardTypes();
         double[][] calculation = new double[boardTypes.getLines()][boardTypes.getColumns()];
 
@@ -55,7 +55,15 @@ public class AI {
         for(int c = 0; c < boardTypes.getColumns(); c++){
             for(int l = 0; l < boardTypes.getLines(); l++){
                 if(visible[l][c] >= 0) {
-                    calculate(calculation, visible, l, c);
+                    calculateMAX(calculation, visible, l, c);
+                }
+            }
+        }
+
+        for(int c = 0; c < boardTypes.getColumns(); c++){
+            for(int l = 0; l < boardTypes.getLines(); l++){
+                if(visible[l][c] >= 0) {
+                    calculateMIN(calculation, visible, l, c);
                 }
             }
         }
@@ -97,19 +105,19 @@ public class AI {
         for(int l = 0; l < calculation.length; l++){
             for(int c = 0; c < calculation[l].length; c++){
                 if(calculation[l][c] == max) {
-                    list.add(l * calculation.length + c);
+                    list.add(l * calculation[l].length + c);
                 }
             }
         }
 
         int index = random.nextInt(list.size());
         int value = list.get(index);
-        move[0] = value / calculation.length;
-        move[1] = value % calculation.length;
+        move[0] = value / calculation[0].length;
+        move[1] = value % calculation[0].length;
 
         return move;
     }
-    private void calculate(double[][] calculation, int[][] visible, int line, int column) {
+    private void calculateMAX(double[][] calculation, int[][] visible, int line, int column) {
 
         int number = visible[line][column];
         double numberClosedCells = getNumberClosedCells(visible, line, column);
@@ -118,9 +126,11 @@ public class AI {
             value = number / numberClosedCells;
         }
 
+        int min;
+        // MAX
         for(int i = 0; i < visible.length; i++) {
             if(visible[i][column] == - 1) {
-                calculation[i][column] += value;
+                calculation[i][column] = Math.max(calculation[i][column], value);
             } else {
                 calculation[i][column] = 0;
             }
@@ -128,16 +138,16 @@ public class AI {
 
         for(int i = 0; i < visible[0].length; i++) {
             if(visible[line][i] == -1) {
-                calculation[line][i] += value;
+                calculation[line][i] = Math.max(calculation[line][i], value);
             } else {
                 calculation[line][i] = 0;
             }
         }
 
-        int min = Math.min(line, column);
+        min = Math.min(line, column);
         for(int i = 0; (line- min + i) < visible.length && (column - min + i) < visible[0].length; i++) {
             if(visible[line - min + i][column - min + i] == -1) {
-                calculation[line - min + i][column - min + i] += value;
+                calculation[line - min + i][column - min + i] = Math.max(calculation[line - min + i][column - min + i], value);
             } else {
                 calculation[line - min + i][column - min + i] = 0;
             }
@@ -146,7 +156,53 @@ public class AI {
         min = Math.min(visible.length - line - 1, column);
         for(int i = 0; (line + min - i) >= 0 && (column - min + i) < visible[0].length; i++) {
             if(visible[line + min - i][column - min + i] == -1) {
-                calculation[line + min - i][column - min + i] += value;
+                calculation[line + min - i][column - min + i] = Math.max(calculation[line + min - i][column - min + i], value);
+            } else {
+                calculation[line + min - i][column - min + i] = 0;
+            }
+        }
+    }
+
+    private void calculateMIN(double[][] calculation, int[][] visible, int line, int column) {
+
+        int number = visible[line][column];
+        double numberClosedCells = getNumberClosedCells(visible, line, column);
+        double value = number;
+        if(numberClosedCells > 0) {
+            value = number / numberClosedCells;
+        }
+
+        int min;
+        // MIN
+        for(int i = 0; i < visible.length; i++) {
+            if(visible[i][column] == - 1) {
+                calculation[i][column] = Math.min(calculation[i][column], value);
+            } else {
+                calculation[i][column] = 0;
+            }
+        }
+
+        for(int i = 0; i < visible[0].length; i++) {
+            if(visible[line][i] == -1) {
+                calculation[line][i] = Math.min(calculation[line][i], value);
+            } else {
+                calculation[line][i] = 0;
+            }
+        }
+
+        min = Math.min(line, column);
+        for(int i = 0; (line- min + i) < visible.length && (column - min + i) < visible[0].length; i++) {
+            if(visible[line - min + i][column - min + i] == -1) {
+                calculation[line - min + i][column - min + i] = Math.min(calculation[line - min + i][column - min + i], value);
+            } else {
+                calculation[line - min + i][column - min + i] = 0;
+            }
+        }
+
+        min = Math.min(visible.length - line - 1, column);
+        for(int i = 0; (line + min - i) >= 0 && (column - min + i) < visible[0].length; i++) {
+            if(visible[line + min - i][column - min + i] == -1) {
+                calculation[line + min - i][column - min + i] = Math.min(calculation[line + min - i][column - min + i], value);
             } else {
                 calculation[line + min - i][column - min + i] = 0;
             }

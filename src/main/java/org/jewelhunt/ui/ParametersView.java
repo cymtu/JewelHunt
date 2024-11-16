@@ -1,46 +1,64 @@
 package org.jewelhunt.ui;
 
+import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.jewelhunt.controllers.Controller;
+import org.jewelhunt.model.BoardTypes;
+import org.jewelhunt.model.BoardTypesConverter;
+import org.jewelhunt.model.GameTypes;
+import org.jewelhunt.model.GameTypesConverter;
 
 public class ParametersView {
-    static Stage stage;
-    static boolean btnOkClicked;
-    static double DEFAULT_SPACING = 20;
-    static double DEFAULT_WIDTH = 300;
+    private Stage stage;
+    private static double DEFAULT_SPACING = 20;
+    private static double DEFAULT_WIDTH = 300;
+    private ComboBox<GameTypes> cbxGameTypes;
+    private ComboBox<BoardTypes> cbxBoardTypes;
+    private Controller controller;
 
-    public static boolean show() {
-        btnOkClicked = false;
+    public void show(Controller controller) {
+        this.controller = controller;
+
         stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setResizable(false);
-        stage.setTitle("Параметры");
+        stage.setTitle(controller.getMessage("ParametersView.Title"));
         stage.setMinWidth(DEFAULT_WIDTH);
 
         VBox pane = new VBox(DEFAULT_SPACING);
         pane.setAlignment(Pos.CENTER);
 
-        Label labBoardTypes = new Label("Размеры игры:");
+        Label labBoardTypes = new Label(controller.getMessage("ParametersView.labBoardTypes"));
+        this.cbxBoardTypes = new ComboBox<>();
+        cbxBoardTypes.setItems(FXCollections.observableArrayList( BoardTypes.values()));
+        cbxBoardTypes.setConverter(new BoardTypesConverter(controller));
+        cbxBoardTypes.setValue(controller.getBoardTypes());
         HBox paneBoardTypes = new HBox(DEFAULT_SPACING);
-        paneBoardTypes.getChildren().addAll(labBoardTypes);
+        paneBoardTypes.getChildren().addAll(labBoardTypes, cbxBoardTypes);
         pane.getChildren().addAll(paneBoardTypes);
 
-        Label labGameTypes = new Label("Тип игры:");
+        Label labGameTypes = new Label(controller.getMessage("ParametersView.labGameTypes"));
+        this.cbxGameTypes = new ComboBox<>();
+        cbxGameTypes.setItems( FXCollections.observableArrayList( GameTypes.values()));
+        cbxGameTypes.setConverter(new GameTypesConverter(controller));
+        cbxGameTypes.setValue(controller.getGameTypes());
         HBox paneGameTypes = new HBox(DEFAULT_SPACING);
-        paneGameTypes.getChildren().addAll(labGameTypes);
+        paneGameTypes.getChildren().addAll(labGameTypes, cbxGameTypes);
         pane.getChildren().addAll(paneGameTypes);
 
         Button btnOk = new Button();
-        btnOk.setText("ОК");
+        btnOk.setText(controller.getMessage("ParametersView.btnOk"));
         btnOk.setOnAction(e -> btnOk_Clicked() );
         Button btnCancel = new Button();
-        btnCancel.setText("Отмена");
+        btnCancel.setText(controller.getMessage("ParametersView.btnCancel"));
         btnCancel.setOnAction(e -> btnCancel_Clicked() );
         HBox paneBtn = new HBox(DEFAULT_SPACING);
         paneBtn.getChildren().addAll(btnOk, btnCancel);
@@ -49,17 +67,16 @@ public class ParametersView {
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         stage.showAndWait();
-
-        return btnOkClicked;
     }
 
-    private static void btnOk_Clicked() {
+    private void btnOk_Clicked() {
         stage.close();
-        btnOkClicked = true;
+        controller.newGame(cbxGameTypes.getValue(), cbxBoardTypes.getValue());
     }
 
-    private static void btnCancel_Clicked() {
+    private void btnCancel_Clicked() {
         stage.close();
-        btnOkClicked = false;
     }
+
+
 }

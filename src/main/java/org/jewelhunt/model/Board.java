@@ -196,4 +196,19 @@ public class Board {
     public BoardTypes getBoardTypes() {
         return boardTypes;
     }
+
+    public int[] getMinMax() {
+        int[] result = new int[]{1000, -1000};
+
+        for(int c = 0; c < boardTypes.getColumns(); c++){
+            for(int l = 0; l < boardTypes.getLines(); l++){
+                if(isCellOpen[l][c] && numbers[l][c] > 0) {
+                    result[0] = Math.min(numbers[l][c], result[0]);
+                    result[1] = Math.max(numbers[l][c], result[1]);
+                }
+            }
+        }
+
+        return result;
+    }
 }

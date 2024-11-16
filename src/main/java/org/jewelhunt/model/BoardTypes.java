@@ -1,9 +1,9 @@
 package org.jewelhunt.model;
 
 public enum BoardTypes {
-    Small(9, 9, 8, 4, 2, 1, 0, 0),
-    Medium(11, 15, 16, 8, 4, 2, 1, 0),
-    Large(13, 26, 32, 16, 8, 4, 2, 1);
+    Small(9, 9, 8, 4, 2, 1, 0, 0, "BoardTypes.Small"),
+    Medium(11, 15, 16, 8, 4, 2, 1, 0, "BoardTypes.Medium"),
+    Large(13, 26, 32, 16, 8, 4, 2, 1, "BoardTypes.Large");
 
     private final int lines;
     private final int columns;
@@ -13,8 +13,9 @@ public enum BoardTypes {
     private final int pearls;
     private final int sapphires;
     private final int rubies;
+    private String name;
 
-    BoardTypes(int lines, int columns, int nuggets, int amethysts, int chrysolites, int pearls, int sapphires, int rubies) {
+    BoardTypes(int lines, int columns, int nuggets, int amethysts, int chrysolites, int pearls, int sapphires, int rubies, String name) {
         this.lines = lines;
         this.columns = columns;
         this.nuggets = nuggets;
@@ -23,6 +24,7 @@ public enum BoardTypes {
         this.pearls = pearls;
         this.sapphires = sapphires;
         this.rubies = rubies;
+        this.name = name;
     }
 
     public int getLines() {
@@ -67,5 +69,10 @@ public enum BoardTypes {
                 + rubies * Jewels.Ruby.getValue();
         value = value / (lines * columns);
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
