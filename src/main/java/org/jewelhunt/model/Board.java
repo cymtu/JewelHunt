@@ -5,25 +5,18 @@ import java.util.Random;
 
 public class Board {
     private final BoardTypes boardTypes;
-
-    private final Jewels[][] jewels;
-
-    private final boolean[][] isCellOpen;
-
-    private final int[][] numbers;
-
-    private final boolean[][] marks;
-
+    private final Cell[][] cells;
     private final Random random;
-
     private int totalNumberOfMissingJewels;
 
     public Board(BoardTypes boardTypes){
         this.boardTypes = boardTypes;
-        jewels = new Jewels[boardTypes.getLines()][boardTypes.getColumns()];
-        isCellOpen = new boolean[boardTypes.getLines()][boardTypes.getColumns()];
-        numbers = new int[boardTypes.getLines()][boardTypes.getColumns()];
-        marks = new boolean[boardTypes.getLines()][boardTypes.getColumns()];
+        cells = new Cell[boardTypes.getLines()][boardTypes.getColumns()];
+        for(int c = 0; c < boardTypes.getColumns(); c++){
+            for(int l = 0; l < boardTypes.getLines(); l++){
+                cells[l][c] = new Cell();
+            }
+        }
         random = new Random();
     }
 
@@ -37,10 +30,7 @@ public class Board {
         totalNumberOfMissingJewels = 0;
         for(int c = 0; c < boardTypes.getColumns(); c++){
             for(int l = 0; l < boardTypes.getLines(); l++){
-                jewels[l][c] = Jewels.Empty;
-                isCellOpen[l][c] = false;
-                marks[l][c] = false;
-                numbers[l][c] = 0;
+                cells[l][c].reset();
             }
         }
     }
@@ -49,8 +39,9 @@ public class Board {
         for(int c = 0; c < boardTypes.getColumns(); c++){
             for(int l = 0; l < boardTypes.getLines(); l++){
                 if(getJewel(l, c) == Jewels.Empty) {
-                    numbers[l][c] = sumJewels(l, c);
-                    if(numbers[l][c] == 0 && isCellOpen[l][c]) {
+                    Cell cell = cells[l][c];
+                    cell.setNumber(sumJewels(l, c));
+                    if(cell.getNumber() == 0 && cell.isOpen()) {
                         markCells(l, c);
                     }
                 }
@@ -144,21 +135,21 @@ public class Board {
             int l = value / boardTypes.getColumns();
             int c = value % boardTypes.getColumns();
             list.remove(index);
-            jewels[l][c] = jewel;
+            cells[l][c].setJewels(jewel);
             totalNumberOfMissingJewels++;
         }
     }
 
     public boolean isCellOpen(int line, int column){
-        return isCellOpen[line][column];
+        return cells[line][column].isOpen();
     }
 
     public void openCell(int line, int column) {
-        if(isCellOpen[line][column]) {
+        if(cells[line][column].isOpen()) {
             return;
         }
 
-        isCellOpen[line][column] = true;
+        cells[line][column].open();
         if(getJewel(line, column) != Jewels.Empty) {
             totalNumberOfMissingJewels--;
         }
@@ -167,26 +158,26 @@ public class Board {
 
     public void setMark(int line, int column) {
         if(!isCellOpen(line, column)) {
-            marks[line][column] = true;
+            cells[line][column].check();
         }
     }
 
     public void resetMark(int line, int column) {
         if(!isCellOpen(line, column)) {
-            marks[line][column] = false;
+            cells[line][column].unCheck();
         }
     }
 
     public boolean isMark(int line, int column){
-        return marks[line][column];
+        return cells[line][column].isMark();
     }
 
     public Jewels getJewel(int line, int column){
-        return jewels[line][column];
+        return cells[line][column].getJewels();
     }
 
     public int getNumber(int line, int column){
-        return numbers[line][column];
+        return cells[line][column].getNumber();
     }
 
     public int getTotalNumberOfMissingJewels() {
@@ -202,9 +193,10 @@ public class Board {
 
         for(int c = 0; c < boardTypes.getColumns(); c++){
             for(int l = 0; l < boardTypes.getLines(); l++){
-                if(isCellOpen[l][c] && numbers[l][c] > 0) {
-                    result[0] = Math.min(numbers[l][c], result[0]);
-                    result[1] = Math.max(numbers[l][c], result[1]);
+                Cell cell = cells[l][c];
+                if(cell.isOpen() && cell.getNumber() > 0) {
+                    result[0] = Math.min(cell.getNumber(), result[0]);
+                    result[1] = Math.max(cell.getNumber(), result[1]);
                 }
             }
         }

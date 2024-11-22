@@ -13,7 +13,7 @@ public enum BoardTypes {
     private final int pearls;
     private final int sapphires;
     private final int rubies;
-    private String name;
+    private final String name;
 
     BoardTypes(int lines, int columns, int nuggets, int amethysts, int chrysolites, int pearls, int sapphires, int rubies, String name) {
         this.lines = lines;
@@ -57,18 +57,6 @@ public enum BoardTypes {
 
     public int getRubies() {
         return rubies;
-    }
-
-    public double originalValue() {
-        double value;
-        value = nuggets * Jewels.Nugget.getValue()
-                + amethysts * Jewels.Amethyst.getValue()
-                + chrysolites * Jewels.Chrysolite.getValue()
-                + pearls * Jewels.Pearl.getValue()
-                + sapphires * Jewels.Sapphire.getValue()
-                + rubies * Jewels.Ruby.getValue();
-        value = value / (lines * columns);
-        return value;
     }
 
     @Override

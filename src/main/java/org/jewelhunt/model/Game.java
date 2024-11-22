@@ -23,7 +23,7 @@ public class Game {
     }
 
     public void init() {
-        boardTypes = BoardTypes.Small;
+        boardTypes = BoardTypes.Medium;
         gameTypes = GameTypes.PlayWithAI;
         board = new Board(boardTypes);
         showBestMoves = true;

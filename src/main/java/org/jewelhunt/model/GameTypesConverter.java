@@ -5,7 +5,7 @@ import org.jewelhunt.controllers.Controller;
 
 public class GameTypesConverter extends StringConverter<GameTypes> {
 
-    private Controller controller;
+    private final Controller controller;
 
     public GameTypesConverter(Controller controller) {
         this.controller = controller;

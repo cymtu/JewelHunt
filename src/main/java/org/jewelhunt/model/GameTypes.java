@@ -4,7 +4,7 @@ public enum GameTypes {
     Single("GameTypes.Single"),
     PlayWithAI("GameTypes.PlayWithAI");
 
-    private String name;
+    private final String name;
 
     GameTypes(String name) {
         this.name = name;

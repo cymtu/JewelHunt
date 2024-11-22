@@ -5,7 +5,7 @@ import org.jewelhunt.controllers.Controller;
 
 public class BoardTypesConverter extends StringConverter<BoardTypes> {
 
-    private Controller controller;
+    private final Controller controller;
 
     public BoardTypesConverter(Controller controller) {
         this.controller = controller;
