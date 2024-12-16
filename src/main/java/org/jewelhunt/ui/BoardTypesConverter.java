@@ -1,7 +1,8 @@
-package org.jewelhunt.model;
+package org.jewelhunt.ui;
 
 import javafx.util.StringConverter;
 import org.jewelhunt.controllers.Controller;
+import org.jewelhunt.model.BoardTypes;
 
 public class BoardTypesConverter extends StringConverter<BoardTypes> {
 

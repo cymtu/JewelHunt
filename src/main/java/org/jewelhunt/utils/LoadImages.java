@@ -1,15 +1,11 @@
 package org.jewelhunt.utils;
 
 import javafx.scene.image.Image;
-import org.jewelhunt.model.Jewels;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class LoadImages {
-
-    public static int SIZE_IMAGE = 64;
-
     public static Image CLOSED;
     public static Image OPEN;
     public static Image NUGGET;
@@ -41,33 +37,6 @@ public class LoadImages {
             throw new RuntimeException(e);
         }
         return image;
-    }
-
-    public static Image getImage(Jewels jewel) {
-        Image img = LoadImages.OPEN;
-
-        switch (jewel) {
-            case Nugget:
-                img = LoadImages.NUGGET;
-                break;
-            case Amethyst:
-                img = LoadImages.AMETHYST;
-                break;
-            case Chrysolite:
-                img = LoadImages.CHRYSOLITE;
-                break;
-            case Pearl:
-                img = LoadImages.PEARL;
-                break;
-            case Sapphire:
-                img = LoadImages.SAPPHIRE;
-                break;
-            case Ruby:
-                img = LoadImages.RUBY;
-                break;
-        }
-
-        return img;
     }
 
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Board {
+    private static int CELL_CLOSED = -1;
+    private static int CELL_CONTAINS_JEWEL = -2;
     private final BoardTypes boardTypes;
     private final Cell[][] cells;
     private final Random random;
@@ -176,6 +178,10 @@ public class Board {
         return cells[line][column].getJewels();
     }
 
+    public boolean isEmpty(int line, int column) {
+        return getJewel(line, column) == Jewels.Empty;
+    }
+
     public int getNumber(int line, int column){
         return cells[line][column].getNumber();
     }
@@ -202,5 +208,52 @@ public class Board {
         }
 
         return result;
+    }
+
+    public int[][] getVisiblePartOfBoard() {
+        int[][] visible = new int[boardTypes.getLines()][boardTypes.getColumns()];
+        for(int c = 0; c < boardTypes.getColumns(); c++){
+            for(int l = 0; l < boardTypes.getLines(); l++){
+                if(isCellOpen(l, c)) {
+                    if(getJewel(l, c) == Jewels.Empty) {
+                        visible[l][c] = getNumber(l, c);  // значение суммы драгоценностей на всех пересечениях
+                    } else {
+                        visible[l][c] = CELL_CONTAINS_JEWEL; // в ячейке драгоценный камень
+                    }
+                } else {
+                    visible[l][c] = CELL_CLOSED; // ячейка закрыта
+                }
+            }
+        }
+
+        return visible;
+    }
+
+    public int sumNotOpenJewels() {
+        int sumJewels = 0;
+
+        for(int c = 0; c < boardTypes.getColumns(); c++){
+            for(int l = 0; l < boardTypes.getLines(); l++){
+                if(!isCellOpen(l, c)) {
+                    if(getJewel(l, c) != Jewels.Empty) {
+                        sumJewels += getJewel(l, c).getValue();
+                    }
+                }
+            }
+        }
+        return sumJewels;
+    }
+
+    public int closedCells() {
+        int closedCells = 0;
+
+        for(int c = 0; c < boardTypes.getColumns(); c++){
+            for(int l = 0; l < boardTypes.getLines(); l++){
+                if(!isCellOpen(l, c)) {
+                    closedCells += 1;
+                }
+            }
+        }
+        return closedCells;
     }
 }

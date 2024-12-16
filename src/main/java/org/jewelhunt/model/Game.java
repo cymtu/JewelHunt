@@ -1,20 +1,25 @@
 package org.jewelhunt.model;
 
-import javafx.scene.input.MouseButton;
+import org.jewelhunt.ai.AIMinMax;
 
 public class Game {
     private Board board;
     private GameTypes gameTypes;
     private GameStatus status;
     private BoardTypes boardTypes;
-    private AI ai;
+    private final AIMinMax aiAssistant;
+    private final AIMinMax aiOpponent;
+    private final AIMinMax aiSecondOpponent;
     private int numberMoves;
     private int scorePlayer;
     private int scoreAi;
+    private int scoreAiSecond;
     private boolean showBestMoves;
 
     public Game() {
-        ai = new AI();
+        aiAssistant = new AIMinMax();
+        aiOpponent = new AIMinMax();
+        aiSecondOpponent = new AIMinMax();
         init();
     }
 
@@ -23,8 +28,8 @@ public class Game {
     }
 
     public void init() {
-        boardTypes = BoardTypes.Medium;
-        gameTypes = GameTypes.PlayWithAI;
+        boardTypes = BoardTypes.Small;
+        gameTypes = GameTypes.GameOfArtificialOpponents;
         board = new Board(boardTypes);
         showBestMoves = true;
         newGame();
@@ -64,29 +69,35 @@ public class Game {
         numberMoves = 0;
         scorePlayer = 0;
         scoreAi = 0;
+        scoreAiSecond = 0;
         board.init();
     }
 
     public void aiMove() {
-        int[] cell = ai.move(board);
+        int[] cell = aiOpponent.move(board.getVisiblePartOfBoard(), board.sumNotOpenJewels(), board.closedCells());
         board.openCell(cell[0], cell[1]);
         numberMoves++;
         scoreAi += board.getJewel(cell[0], cell[1]).getValue();
     }
 
-    public void mouseClicked(int line, int column, MouseButton button) {
-        if(button == MouseButton.PRIMARY) {
-            board.openCell(line, column);
-            numberMoves++;
-            scorePlayer += board.getJewel(line, column).getValue();
-        }
+    public void aiMoveSecond() {
+        int[] cell = aiSecondOpponent.move(board.getVisiblePartOfBoard(), board.sumNotOpenJewels(), board.closedCells());
+        board.openCell(cell[0], cell[1]);
+        numberMoves++;
+        scoreAiSecond += board.getJewel(cell[0], cell[1]).getValue();
+    }
 
-        if(button == MouseButton.SECONDARY) {
-            if(board.isMark(line, column)) {
-                board.resetMark(line, column);
-            } else {
-                board.setMark(line, column);
-            }
+    public void movePlayer(int line, int column) {
+        board.openCell(line, column);
+        numberMoves++;
+        scorePlayer += board.getJewel(line, column).getValue();
+    }
+
+    public void mark(int line, int column) {
+        if(board.isMark(line, column)) {
+            board.resetMark(line, column);
+        } else {
+            board.setMark(line, column);
         }
     }
 
@@ -102,8 +113,12 @@ public class Game {
         return board.getNumber(line, column);
     }
 
-    public Jewels getJewel(int line, int column){
+    public Jewels getJewel(int line, int column) {
         return board.getJewel(line, column);
+    }
+
+    public boolean isEmpty(int line, int column) {
+        return board.isEmpty(line, column);
     }
 
     public int getNumberMoves() {
@@ -118,6 +133,10 @@ public class Game {
         return scoreAi;
     }
 
+    public int getScoreAiSecond() {
+        return scoreAiSecond;
+    }
+
     public boolean isShowBestMoves() {
         return showBestMoves;
     }
@@ -126,9 +145,10 @@ public class Game {
         this.showBestMoves = showBestMoves;
     }
 
-    public double[][] getBestMoves(Board board) {
-        int[][] visible = ai.getVisible(board);
-        return ai.getCalculation(visible, board);
+    public double[][] getBestMoves() {
+        int[][] visible = board.getVisiblePartOfBoard();
+        double averageValue = ((double) board.sumNotOpenJewels() / board.closedCells());
+        return aiAssistant.getCalculation(visible, averageValue);
     }
 
     public BoardTypes getBoardTypes() {
@@ -145,5 +165,17 @@ public class Game {
 
     public int[] getMinMax() {
         return board.getMinMax();
+    }
+
+    public AIMinMax getAiAssistant() {
+        return aiAssistant;
+    }
+
+    public AIMinMax getAiOpponent() {
+        return aiOpponent;
+    }
+
+    public AIMinMax getAiSecondOpponent() {
+        return aiSecondOpponent;
     }
 }

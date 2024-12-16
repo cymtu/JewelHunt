@@ -1,49 +1,29 @@
-package org.jewelhunt.model;
+package org.jewelhunt.ai;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class AI {
+public class AIMinMax {
 
     Random random;
 
-    public AI() {
+    public AIMinMax() {
         random = new Random();
     }
 
-    public int[] move(Board board) {
-        int[][] visible = getVisible(board);
-        double[][] calculation = getCalculation(visible, board);
+    public int[] move(int[][] visible, int sumNotOpenJewels, int closedCells) {
+        double averageValue = ((double) sumNotOpenJewels / closedCells);
+        double[][] calculation = getCalculation(visible, averageValue);
         return findBestSolution(calculation);
     }
 
-    public int[][] getVisible(Board board) {
-        BoardTypes boardTypes = board.getBoardTypes();
-        int[][] visible = new int[boardTypes.getLines()][boardTypes.getColumns()];
-        for(int c = 0; c < boardTypes.getColumns(); c++){
-            for(int l = 0; l < boardTypes.getLines(); l++){
-                if(board.isCellOpen(l, c)) {
-                    if(board.getJewel(l, c) == Jewels.Empty) {
-                        visible[l][c] = board.getNumber(l, c);  // значение суммы драгоценностей на всех пересечениях
-                    } else {
-                        visible[l][c] = - 2; // в ячейке драгоценный камень
-                    }
-                } else {
-                    visible[l][c] = - 1; // ячейка закрыта
-                }
-            }
-        }
+    public double[][] getCalculation(int[][] visible, double originalValue) {
+        int lines = visible.length;
+        int columns = visible[0].length;
+        double[][] calculation = new double[lines][columns];
 
-        return visible;
-    }
-
-    public double[][] getCalculation(int[][] visible, Board board) {
-        BoardTypes boardTypes = board.getBoardTypes();
-        double[][] calculation = new double[boardTypes.getLines()][boardTypes.getColumns()];
-
-        double originalValue = originalValue(visible, board);
-        for(int c = 0; c < boardTypes.getColumns(); c++){
-            for(int l = 0; l < boardTypes.getLines(); l++){
+        for(int c = 0; c < columns; c++){
+            for(int l = 0; l < lines; l++){
                 if(visible[l][c] == - 1) {
                     calculation[l][c] = originalValue;
                 } else {
@@ -52,16 +32,16 @@ public class AI {
             }
         }
 
-        for(int c = 0; c < boardTypes.getColumns(); c++){
-            for(int l = 0; l < boardTypes.getLines(); l++){
+        for(int c = 0; c < columns; c++){
+            for(int l = 0; l < lines; l++){
                 if(visible[l][c] >= 0) {
                     calculateMAX(calculation, visible, l, c);
                 }
             }
         }
 
-        for(int c = 0; c < boardTypes.getColumns(); c++){
-            for(int l = 0; l < boardTypes.getLines(); l++){
+        for(int c = 0; c < columns; c++){
+            for(int l = 0; l < lines; l++){
                 if(visible[l][c] >= 0) {
                     calculateMIN(calculation, visible, l, c);
                 }
@@ -69,24 +49,6 @@ public class AI {
         }
 
         return calculation;
-    }
-
-    private double originalValue(int[][] visible, Board board) {
-        double closedCells = 0;
-        double sumJewels = 0;
-
-        BoardTypes boardTypes = board.getBoardTypes();
-        for(int c = 0; c < boardTypes.getColumns(); c++){
-            for(int l = 0; l < boardTypes.getLines(); l++){
-                if(visible[l][c] == -1) {
-                    closedCells += 1;
-                    if(board.getJewel(l, c) != Jewels.Empty) {
-                        sumJewels += board.getJewel(l, c).getValue();
-                    }
-                }
-            }
-        }
-        return sumJewels/closedCells;
     }
 
     private int[] findBestSolution(double[][] calculation) {
@@ -239,5 +201,9 @@ public class AI {
         }
 
         return value;
+    }
+
+    public AiTypes getType() {
+        return AiTypes.MaxMin;
     }
 }

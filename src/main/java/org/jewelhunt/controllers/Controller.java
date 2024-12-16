@@ -4,35 +4,29 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.jewelhunt.model.BoardTypes;
 import org.jewelhunt.model.Game;
 import org.jewelhunt.model.GameTypes;
-import org.jewelhunt.model.Jewels;
 import org.jewelhunt.ui.AboutView;
 import org.jewelhunt.ui.ParametersView;
-import org.jewelhunt.ui.ViewApp;
 import org.jewelhunt.ui.WindowApp;
 import org.jewelhunt.utils.LoadImages;
 import org.jewelhunt.utils.ResourceMessage;
 
 public class Controller {
     private final Game game;
-
     private final WindowApp windowApp;
-
     private final Stage stage;
-
     private final ResourceMessage resourceMessage;
-
-    private boolean sellIsAlreadyOpen = false;
+    private String styleCSS;
 
     public Controller(Stage stage) {
         this.stage = stage;
         resourceMessage = new ResourceMessage();
         this.game = new Game();
         this.windowApp = new WindowApp(this);
+        this.styleCSS = getClass().getResource("/css/jewelhunt.css").toExternalForm();
         LoadImages.load();
         newGame();
     }
@@ -48,14 +42,18 @@ public class Controller {
     public void setOnMouseClicked(MouseEvent mouseEvent){
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
-        int line = (int) (y / LoadImages.SIZE_IMAGE);
-        int column = (int) (x / LoadImages.SIZE_IMAGE);
+        int line = (int) (y / WindowApp.SIZE_IMAGE);
+        int column = (int) (x / WindowApp.SIZE_IMAGE);
 
         mouseClicked(line, column, mouseEvent.getButton());
-        outputGameState();
     }
 
     private void mouseClicked(int line, int column, MouseButton button){
+
+        if(game.getGameTypes() == GameTypes.GameOfArtificialOpponents) {
+            return;
+        }
+
         if(game.isGameOver()) {
             if(button == MouseButton.SECONDARY) {
                 newGame();
@@ -64,12 +62,18 @@ public class Controller {
         }
 
         if(game.getBoard().isCellOpen(line, column)) {
-            sellIsAlreadyOpen = true;
             return;
         }
 
-        game.mouseClicked(line, column, button);
-        render();
+        if(button == MouseButton.PRIMARY) {
+            game.movePlayer(line, column);
+        }
+
+        if(button == MouseButton.SECONDARY) {
+            game.mark(line, column);
+        }
+
+        windowApp.update();
 
         if(button == MouseButton.SECONDARY) {
             return;
@@ -77,7 +81,7 @@ public class Controller {
 
         if(game.getGameTypes() == GameTypes.PlayWithAI) {
             game.aiMove();
-            render();
+            windowApp.update();
         }
     }
 
@@ -87,104 +91,27 @@ public class Controller {
 
     public void newGame(){
         game.newGame();
-        ViewApp viewApp = windowApp.getViewApp();
-        viewApp.setHeightCanvas(LoadImages.SIZE_IMAGE * game.getLines());
-        viewApp.setWidthCanvas(LoadImages.SIZE_IMAGE * game.getColumns());
+        windowApp.newGame();
         stage.sizeToScene();
         stage.centerOnScreen();
-        outputGameState();
-        render();
+        windowApp.update();
+        if(game.getGameTypes() == GameTypes.GameOfArtificialOpponents) {
+            GameOfArtificialOpponents();
+        }
     }
 
-    private void outputGameState() {
-        String s = "";
+    private void GameOfArtificialOpponents() {
 
-        if(game.getNumberMoves() == 0) {
-            s = getMessage("Controller.NewGame");
-        }
-
-        if(game.isGameOver()) {
-            s = getMessage("Controller.GameOver") ;
-        }
-
-        if(sellIsAlreadyOpen && !game.isGameOver()) {
-            sellIsAlreadyOpen = false;
-            s = getMessage("Controller.CellIsAlreadyOpen");
-        }
-
-        s += getMessage("Controller.Move") + game.getNumberMoves() + " " + getMessage("Controller.Score") + game.getScorePlayer() + "/" + game.getScoreAi();
-
-        windowApp.setBottomText(s);
-    }
-
-    public void render(){
-        for(int i = 0; i < game.getLines(); i++){
-            for(int j = 0; j < game.getColumns(); j++){
-                drawCell(i, j);
+        while (!game.isGameOver()) {
+            game.aiMove();
+            windowApp.update();
+            if(game.isGameOver()) {
+                continue;
             }
+            game.aiMoveSecond();
+            windowApp.update();
         }
 
-        ViewApp viewApp = windowApp.getViewApp();
-        int[] minMax = game.getMinMax();
-        for(int i = 0; i < game.getLines(); i++){
-            for(int j = 0; j < game.getColumns(); j++){
-                if(game.isCellOpen(i, j)) {
-                    if(game.getJewel(i, j) == Jewels.Empty) {
-                        int number = game.getNumber(i, j);
-                        viewApp.setStroke(Color.YELLOW);
-                        if(number == minMax[0]) {
-                            viewApp.setStroke(Color.GREEN);
-                        }
-                        if(number == minMax[1]) {
-                            viewApp.setStroke(Color.RED);
-                        }
-                        if(number != 0) {
-                            viewApp.strokeText(String.valueOf(number), LoadImages.SIZE_IMAGE, i, j);
-                        }
-                    }
-                }
-            }
-        }
-
-        viewApp.setStroke(Color.BLACK);
-
-        if (game.isShowBestMoves()) {
-            double[][] calculation = game.getBestMoves(game.getBoard());
-            for(int i = 0; i < game.getLines(); i++){
-                for(int j = 0; j < game.getColumns(); j++){
-                    double v = LoadImages.SIZE_IMAGE * j;
-                    double v1 = LoadImages.SIZE_IMAGE * (i + 1) - 4;
-                    viewApp.strokeText(String.format("%3.0f", 100*calculation[i][j]), v, v1);
-                }
-            }
-        }
-    }
-
-    private void drawCell(int line, int column) {
-        if(game.isCellOpen(line, column)) {
-            drawCellOpen(line, column);
-        } else {
-            drawCellClosed(line, column);
-        }
-    }
-
-    private void drawCellOpen(int line, int column) {
-        ViewApp viewApp = windowApp.getViewApp();
-        viewApp.drawImage(LoadImages.OPEN, LoadImages.SIZE_IMAGE, line, column);
-
-        if(game.getJewel(line, column) != Jewels.Empty) {
-            Image img = LoadImages.getImage(game.getBoard().getJewel(line, column));
-            viewApp.drawImage(img, LoadImages.SIZE_IMAGE, line, column);
-        }
-    }
-
-    private void drawCellClosed(int line, int column) {
-        ViewApp viewApp = windowApp.getViewApp();
-        viewApp.drawImage(LoadImages.CLOSED, LoadImages.SIZE_IMAGE, line, column);
-
-        if(game.isMark(line, column)) {
-            viewApp.drawImage(LoadImages.COAL, LoadImages.SIZE_IMAGE, line, column);
-        }
     }
 
     public void showAbout() {
@@ -196,18 +123,54 @@ public class Controller {
         view.show(this);
     }
 
-    public GameTypes getGameTypes() {
-        return game.getGameTypes();
-    }
-
-    public BoardTypes getBoardTypes () {
-        return game.getBoardTypes();
-    }
-
-    public void newGame(GameTypes gameTypes, BoardTypes boardTypes) {
+    public void newGame(GameTypes gameTypes, BoardTypes boardTypes, boolean showBestMoves) {
         game.setGameTypes(gameTypes);
         game.setBoardTypes(boardTypes);
         game.init(gameTypes, boardTypes);
+        game.setShowBestMoves(showBestMoves);
         newGame();
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public Image getImage(String imgName) {
+        Image img;
+
+        switch (imgName) {
+            case "Nugget":
+                img = LoadImages.NUGGET;
+                break;
+            case "Amethyst":
+                img = LoadImages.AMETHYST;
+                break;
+            case "Chrysolite":
+                img = LoadImages.CHRYSOLITE;
+                break;
+            case "Pearl":
+                img = LoadImages.PEARL;
+                break;
+            case "Sapphire":
+                img = LoadImages.SAPPHIRE;
+                break;
+            case "Ruby":
+                img = LoadImages.RUBY;
+                break;
+            case "Closed":
+                img = LoadImages.CLOSED;
+                break;
+            case "Coal":
+                img = LoadImages.COAL;
+                break;
+            default:
+                img = LoadImages.OPEN;
+        }
+
+        return img;
+    }
+
+    public String getStyleCSS() {
+        return styleCSS;
     }
 }

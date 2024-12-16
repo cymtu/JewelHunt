@@ -1,5 +1,6 @@
 package org.jewelhunt.ui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,12 +29,13 @@ public class AboutView {
         pane.getChildren().addAll(createLabel(controller.getMessage("AboutView.labProgrammer")));
         pane.getChildren().addAll(createLabel(controller.getMessage("AboutView.labEmail")));
         pane.getChildren().addAll(createLabel(controller.getMessage("AboutView.labGitHub")));
-        pane.getChildren().addAll(createLabel(controller.getMessage("AboutView.labYesAiText")));
-        pane.getChildren().addAll(createLabel(controller.getMessage("AboutView.labYesAi")));
+        pane.getChildren().addAll(createLabel(controller.getMessage("AboutView.labAiText")));
+        pane.getChildren().addAll(createLabel(controller.getMessage("AboutView.labAi")));
 
         pane.getChildren().addAll(createButtonOk(controller.getMessage("AboutView.btnOk")));
 
         Scene scene = new Scene(pane);
+        scene.getStylesheets().add(controller.getStyleCSS());
         stage.setScene(scene);
         stage.showAndWait();
     }
@@ -41,6 +43,7 @@ public class AboutView {
     private static HBox createLabel(String s) {
         Label lab = new Label(s);
         HBox hBox = new HBox(DEFAULT_SPACING);
+        hBox.setPadding(new Insets(10, 10, 10, 10));
         hBox.getChildren().addAll(lab);
         return hBox;
     }
@@ -50,6 +53,7 @@ public class AboutView {
         btn.setText(s);
         btn.setOnAction(e -> close() );
         HBox hBox = new HBox(DEFAULT_SPACING);
+        hBox.setPadding(new Insets(10, 10, 10, 10));
         hBox.getChildren().addAll(btn);
         return hBox;
     }

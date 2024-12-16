@@ -5,9 +5,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.jewelhunt.controllers.Controller;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     @Override
@@ -16,6 +13,8 @@ public class App extends Application {
         Controller controller = new Controller(stage);
 
         var scene = new Scene(controller.getWindowApp());
+
+        scene.getStylesheets().add(controller.getStyleCSS());
 
         stage.setTitle(controller.getMessage("AppName"));
         stage.setResizable(false);
