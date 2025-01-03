@@ -1,6 +1,5 @@
 package org.jewelhunt.ui;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,7 +12,6 @@ import org.jewelhunt.controllers.Controller;
 
 public class AboutView {
     private static Stage stage;
-    private static final double DEFAULT_SPACING = 20;
     private static final double DEFAULT_WIDTH = 300;
 
     public static void show(Controller controller) {
@@ -23,7 +21,7 @@ public class AboutView {
         stage.setTitle(controller.getMessage("AboutView.Title"));
         stage.setMinWidth(DEFAULT_WIDTH);
 
-        VBox pane = new VBox(DEFAULT_SPACING);
+        VBox pane = new VBox();
         pane.setAlignment(Pos.CENTER);
 
         pane.getChildren().addAll(createLabel(controller.getMessage("AboutView.labProgrammer")));
@@ -42,8 +40,8 @@ public class AboutView {
 
     private static HBox createLabel(String s) {
         Label lab = new Label(s);
-        HBox hBox = new HBox(DEFAULT_SPACING);
-        hBox.setPadding(new Insets(10, 10, 10, 10));
+        HBox hBox = new HBox();
+        hBox.getStyleClass().add("hbox");
         hBox.getChildren().addAll(lab);
         return hBox;
     }
@@ -52,8 +50,8 @@ public class AboutView {
         Button btn = new Button();
         btn.setText(s);
         btn.setOnAction(e -> close() );
-        HBox hBox = new HBox(DEFAULT_SPACING);
-        hBox.setPadding(new Insets(10, 10, 10, 10));
+        HBox hBox = new HBox();
+        hBox.getStyleClass().add("hbox");
         hBox.getChildren().addAll(btn);
         return hBox;
     }

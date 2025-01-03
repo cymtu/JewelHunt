@@ -1,14 +1,13 @@
-.root{
-    -fx-background-color:Wheat;
-    -fx-alignment:center;
-    -fx-background-radius: 100;
+.root {
 }
-.label{
-    -fx-font-size:18pt;
-    -fx-font:bold 10pt"Arial";
-    -fx-padding:10
+.label {
 }
-.button
-{
-    -fx-border-radius:20;
+.button {
+}
+.hbox {
+    -fx-padding: 5;
+    -fx-spacing: 3;
+}
+.vbox {
+    -fx-spacing: 3;
 }

@@ -11,10 +11,10 @@ public class LoadImages {
     public static Image NUGGET;
     public static Image AMETHYST;
     public static Image CHRYSOLITE;
-    public static Image PEARL;
+    public static Image EMERALD;
     public static Image SAPPHIRE;
     public static Image RUBY;
-    public static Image COAL;
+    public static Image STONE;
 
     public static void load() {
         CLOSED = loadImage("closed");
@@ -22,10 +22,10 @@ public class LoadImages {
         NUGGET = loadImage("nugget");
         AMETHYST = loadImage("amethyst");
         CHRYSOLITE = loadImage("chrysolite");
-        PEARL = loadImage("pearl");
+        EMERALD = loadImage("emerald");
         SAPPHIRE = loadImage("sapphire");
         RUBY = loadImage("ruby");
-        COAL = loadImage("coal");
+        STONE = loadImage("stone");
     }
 
     public static Image loadImage(String name) {

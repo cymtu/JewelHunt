@@ -18,7 +18,6 @@ import org.jewelhunt.model.*;
 
 public class ParametersView {
     private Stage stage;
-    private static final double DEFAULT_SPACING = 20;
     private static final double DEFAULT_WIDTH = 300;
     private ComboBox<GameTypes> cbxGameTypes;
     private ComboBox<BoardTypes> cbxBoardTypes;
@@ -39,7 +38,8 @@ public class ParametersView {
         stage.setTitle(controller.getMessage("ParametersView.Title"));
         stage.setMinWidth(DEFAULT_WIDTH);
 
-        VBox pane = new VBox(DEFAULT_SPACING);
+        VBox pane = new VBox();
+        pane.getStyleClass().add("vbox");
         pane.setAlignment(Pos.CENTER);
 
         pane.getChildren().addAll(paneBoardTypes());
@@ -59,8 +59,8 @@ public class ParametersView {
         cbxBoardTypes.setItems(FXCollections.observableArrayList( BoardTypes.values()));
         cbxBoardTypes.setConverter(new BoardTypesConverter(controller));
         cbxBoardTypes.setValue(game.getBoardTypes());
-        HBox paneBoardTypes = new HBox(DEFAULT_SPACING);
-        paneBoardTypes.setPadding(new Insets(10, 10, 10, 10));
+        HBox paneBoardTypes = new HBox();
+        paneBoardTypes.getStyleClass().add("hbox");
         paneBoardTypes.getChildren().addAll(labBoardTypes, cbxBoardTypes);
         return paneBoardTypes;
     }
@@ -83,8 +83,8 @@ public class ParametersView {
         cbxAiSecondOpponentTypes.setConverter(new AiTypesConverter(controller));
         cbxAiSecondOpponentTypes.setValue(game.getAiSecondOpponent().getType());
 
-        HBox paneGameTypes = new HBox(DEFAULT_SPACING);
-        paneGameTypes.setPadding(new Insets(10, 10, 10, 10));
+        HBox paneGameTypes = new HBox();
+        paneGameTypes.getStyleClass().add("hbox");
         paneGameTypes.getChildren().addAll(labGameTypes, cbxGameTypes, cbxAiOpponentTypes, cbxAiSecondOpponentTypes);
         return paneGameTypes;
     }
@@ -99,8 +99,8 @@ public class ParametersView {
         cbxAiAssistantTypes.setConverter(new AiTypesConverter(controller));
         cbxAiAssistantTypes.setValue(game.getAiAssistant().getType());
 
-        HBox hBox = new HBox(DEFAULT_SPACING);
-        hBox.setPadding(new Insets(10, 10, 10, 10));
+        HBox hBox = new HBox();
+        hBox.getStyleClass().add("hbox");
         hBox.getChildren().addAll(label, checkBox, cbxAiAssistantTypes);
         return hBox;
     }
@@ -112,8 +112,8 @@ public class ParametersView {
         Button btnCancel = new Button();
         btnCancel.setText(controller.getMessage("ParametersView.btnCancel"));
         btnCancel.setOnAction(e -> btnCancel_Clicked() );
-        HBox paneBtn = new HBox(DEFAULT_SPACING);
-        paneBtn.setPadding(new Insets(10, 10, 10, 10));
+        HBox paneBtn = new HBox();
+        paneBtn.getStyleClass().add("hbox");
         paneBtn.getChildren().addAll(btnOk, btnCancel);
         return paneBtn;
     }

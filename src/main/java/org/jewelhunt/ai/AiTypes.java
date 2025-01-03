@@ -1,7 +1,7 @@
 package org.jewelhunt.ai;
 
 public enum AiTypes {
-    MaxMin("AiTypes.MaxMin");
+    Min("AiTypes.Min");
 
     private final String name;
 

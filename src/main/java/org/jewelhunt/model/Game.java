@@ -1,15 +1,18 @@
 package org.jewelhunt.model;
 
-import org.jewelhunt.ai.AIMinMax;
+import org.jewelhunt.ai.AiData;
+import org.jewelhunt.ai.AiMin;
+import org.jewelhunt.ai.Solution;
 
 public class Game {
     private Board board;
     private GameTypes gameTypes;
     private GameStatus status;
     private BoardTypes boardTypes;
-    private final AIMinMax aiAssistant;
-    private final AIMinMax aiOpponent;
-    private final AIMinMax aiSecondOpponent;
+    private final AiMin aiAssistant;
+    private final AiMin aiOpponent;
+    private final AiMin aiSecondOpponent;
+    private final AiData data;
     private int numberMoves;
     private int scorePlayer;
     private int scoreAi;
@@ -17,9 +20,10 @@ public class Game {
     private boolean showBestMoves;
 
     public Game() {
-        aiAssistant = new AIMinMax();
-        aiOpponent = new AIMinMax();
-        aiSecondOpponent = new AIMinMax();
+        data = new AiData();
+        aiAssistant = new AiMin(data);
+        aiOpponent = new AiMin(data);
+        aiSecondOpponent = new AiMin(data);
         init();
     }
 
@@ -29,7 +33,7 @@ public class Game {
 
     public void init() {
         boardTypes = BoardTypes.Small;
-        gameTypes = GameTypes.GameOfArtificialOpponents;
+        gameTypes = GameTypes.PlayWithAI;
         board = new Board(boardTypes);
         showBestMoves = true;
         newGame();
@@ -74,17 +78,19 @@ public class Game {
     }
 
     public void aiMove() {
-        int[] cell = aiOpponent.move(board.getVisiblePartOfBoard(), board.sumNotOpenJewels(), board.closedCells());
-        board.openCell(cell[0], cell[1]);
+        data.init(board.getCellState(), board.getCellValues(), boardTypes);
+        Solution solution = aiOpponent.findSolution();
+        board.openCell(solution.getLine(), solution.getColumns());
         numberMoves++;
-        scoreAi += board.getJewel(cell[0], cell[1]).getValue();
+        scoreAi += board.getJewel(solution.getLine(), solution.getColumns()).getValue();
     }
 
     public void aiMoveSecond() {
-        int[] cell = aiSecondOpponent.move(board.getVisiblePartOfBoard(), board.sumNotOpenJewels(), board.closedCells());
-        board.openCell(cell[0], cell[1]);
+        data.init(board.getCellState(), board.getCellValues(), boardTypes);
+        Solution solution = aiSecondOpponent.findSolution();
+        board.openCell(solution.getLine(), solution.getColumns());
         numberMoves++;
-        scoreAiSecond += board.getJewel(cell[0], cell[1]).getValue();
+        scoreAiSecond += board.getJewel(solution.getLine(), solution.getColumns()).getValue();
     }
 
     public void movePlayer(int line, int column) {
@@ -145,10 +151,10 @@ public class Game {
         this.showBestMoves = showBestMoves;
     }
 
-    public double[][] getBestMoves() {
-        int[][] visible = board.getVisiblePartOfBoard();
-        double averageValue = ((double) board.sumNotOpenJewels() / board.closedCells());
-        return aiAssistant.getCalculation(visible, averageValue);
+    public AiData getBestMoves() {
+        data.init(board.getCellState(), board.getCellValues(), boardTypes);
+        aiAssistant.calculation();
+        return data;
     }
 
     public BoardTypes getBoardTypes() {
@@ -167,15 +173,15 @@ public class Game {
         return board.getMinMax();
     }
 
-    public AIMinMax getAiAssistant() {
+    public AiMin getAiAssistant() {
         return aiAssistant;
     }
 
-    public AIMinMax getAiOpponent() {
+    public AiMin getAiOpponent() {
         return aiOpponent;
     }
 
-    public AIMinMax getAiSecondOpponent() {
+    public AiMin getAiSecondOpponent() {
         return aiSecondOpponent;
     }
 }

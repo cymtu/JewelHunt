@@ -148,8 +148,8 @@ public class Controller {
             case "Chrysolite":
                 img = LoadImages.CHRYSOLITE;
                 break;
-            case "Pearl":
-                img = LoadImages.PEARL;
+            case "Emerald":
+                img = LoadImages.EMERALD;
                 break;
             case "Sapphire":
                 img = LoadImages.SAPPHIRE;
@@ -160,8 +160,8 @@ public class Controller {
             case "Closed":
                 img = LoadImages.CLOSED;
                 break;
-            case "Coal":
-                img = LoadImages.COAL;
+            case "Stone":
+                img = LoadImages.STONE;
                 break;
             default:
                 img = LoadImages.OPEN;

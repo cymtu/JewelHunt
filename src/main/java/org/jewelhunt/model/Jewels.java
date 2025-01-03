@@ -5,7 +5,7 @@ public enum Jewels {
     Nugget(1, "Nugget"),
     Amethyst(2, "Amethyst"),
     Chrysolite(4, "Chrysolite"),
-    Pearl(8, "Pearl"),
+    Emerald(8, "Emerald"),
     Sapphire(16, "Sapphire"),
     Ruby(32, "Ruby");
 

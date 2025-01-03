@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Board {
-    private static int CELL_CLOSED = -1;
-    private static int CELL_CONTAINS_JEWEL = -2;
+    private static final int CELL_CLOSED = -1;
+    private static final int CELL_CONTAINS_NUMBER = 0;
+    private static final int CELL_CONTAINS_JEWEL = 1;
     private final BoardTypes boardTypes;
     private final Cell[][] cells;
     private final Random random;
@@ -125,7 +126,7 @@ public class Board {
         arrangementJewels(list, boardTypes.getNuggets(), Jewels.Nugget);
         arrangementJewels(list, boardTypes.getAmethysts(), Jewels.Amethyst);
         arrangementJewels(list, boardTypes.getChrysolites(), Jewels.Chrysolite);
-        arrangementJewels(list, boardTypes.getPearls(), Jewels.Pearl);
+        arrangementJewels(list, boardTypes.getEmeralds(), Jewels.Emerald);
         arrangementJewels(list, boardTypes.getSapphires(), Jewels.Sapphire);
         arrangementJewels(list, boardTypes.getRubies(), Jewels.Ruby);
     }
@@ -256,4 +257,43 @@ public class Board {
         }
         return closedCells;
     }
+
+    public int[][] getCellState() {
+        int[][] cellState = new int[boardTypes.getLines()][boardTypes.getColumns()];
+        for(int c = 0; c < boardTypes.getColumns(); c++){
+            for(int l = 0; l < boardTypes.getLines(); l++){
+                if(isCellOpen(l, c)) {
+                    if(getJewel(l, c) == Jewels.Empty) {
+                        cellState[l][c] = CELL_CONTAINS_NUMBER;  // в ячейке число
+                    } else {
+                        cellState[l][c] = CELL_CONTAINS_JEWEL; // в ячейке драгоценный камень
+                    }
+                } else {
+                    cellState[l][c] = CELL_CLOSED; // ячейка закрыта
+                }
+            }
+        }
+
+        return cellState;
+    }
+
+    public int[][] getCellValues() {
+        int[][] cellValues = new int[boardTypes.getLines()][boardTypes.getColumns()];
+        for(int c = 0; c < boardTypes.getColumns(); c++){
+            for(int l = 0; l < boardTypes.getLines(); l++){
+                if(isCellOpen(l, c)) {
+                    if(getJewel(l, c) == Jewels.Empty) {
+                        cellValues[l][c] = getNumber(l, c);  // в ячейке значение числа
+                    } else {
+                        cellValues[l][c] = getJewel(l, c).getValue(); // в ячейке значение ценности драгоценного камня
+                    }
+                } else {
+                    cellValues[l][c] = CELL_CLOSED; // ячейка закрыта
+                }
+            }
+        }
+
+        return cellValues;
+    }
+
 }

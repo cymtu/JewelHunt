@@ -10,18 +10,18 @@ public enum BoardTypes {
     private final int nuggets;
     private final int amethysts;
     private final int chrysolites;
-    private final int pearls;
+    private final int emeralds;
     private final int sapphires;
     private final int rubies;
     private final String name;
 
-    BoardTypes(int lines, int columns, int nuggets, int amethysts, int chrysolites, int pearls, int sapphires, int rubies, String name) {
+    BoardTypes(int lines, int columns, int nuggets, int amethysts, int chrysolites, int emeralds, int sapphires, int rubies, String name) {
         this.lines = lines;
         this.columns = columns;
         this.nuggets = nuggets;
         this.amethysts = amethysts;
         this.chrysolites = chrysolites;
-        this.pearls = pearls;
+        this.emeralds = emeralds;
         this.sapphires = sapphires;
         this.rubies = rubies;
         this.name = name;
@@ -47,8 +47,8 @@ public enum BoardTypes {
         return chrysolites;
     }
 
-    public int getPearls() {
-        return pearls;
+    public int getEmeralds() {
+        return emeralds;
     }
 
     public int getSapphires() {
@@ -62,5 +62,18 @@ public enum BoardTypes {
     @Override
     public String toString() {
         return name;
+    }
+
+    public int getValueSumAllJewels() {
+        int sum = 0;
+
+        sum = nuggets * Jewels.Nugget.getValue()
+                + amethysts * Jewels.Amethyst.getValue()
+                + chrysolites * Jewels.Chrysolite.getValue()
+                + emeralds * Jewels.Emerald.getValue()
+                + sapphires * Jewels.Sapphire.getValue()
+                + rubies * Jewels.Ruby.getValue();
+
+        return sum;
     }
 }

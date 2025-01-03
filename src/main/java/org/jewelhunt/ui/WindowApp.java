@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import org.jewelhunt.ai.AiData;
 import org.jewelhunt.controllers.Controller;
 import org.jewelhunt.model.Game;
 import org.jewelhunt.model.GameTypes;
@@ -97,12 +98,14 @@ public class WindowApp extends BorderPane {
         viewApp.setStroke(Color.BLACK);
 
         if (game.isShowBestMoves()) {
-            double[][] calculation = game.getBestMoves();
+            AiData data = game.getBestMoves();
             for(int i = 0; i < game.getLines(); i++){
                 for(int j = 0; j < game.getColumns(); j++){
-                    double v = SIZE_IMAGE * j + sizeFont;
-                    double v1 = SIZE_IMAGE * (i + 1) - sizeFont;
-                    viewApp.strokeText(String.format("%3.0f", 100*calculation[i][j]), v, v1);
+                    if(!game.isCellOpen(i, j) & !game.isMark(i, j)) {
+                        double v = SIZE_IMAGE * j + sizeFont;
+                        double v1 = SIZE_IMAGE * (i + 1) - sizeFont;
+                        viewApp.strokeText(String.format("%3.0f", 100 * data.get(i, j)), v, v1);
+                    }
                 }
             }
         }
@@ -131,7 +134,7 @@ public class WindowApp extends BorderPane {
         viewApp.drawImage(controller.getImage("Closed"), SIZE_IMAGE, line, column);
 
         if(game.isMark(line, column)) {
-            viewApp.drawImage(controller.getImage("Coal"), SIZE_IMAGE, line, column);
+            viewApp.drawImage(controller.getImage("Stone"), SIZE_IMAGE, line, column);
         }
     }
 }
