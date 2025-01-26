@@ -39,4 +39,39 @@ public class LoadImages {
         return image;
     }
 
+    public static Image getImage(String imgName) {
+        Image img;
+
+        switch (imgName) {
+            case "Nugget":
+                img = NUGGET;
+                break;
+            case "Amethyst":
+                img = AMETHYST;
+                break;
+            case "Chrysolite":
+                img = CHRYSOLITE;
+                break;
+            case "Emerald":
+                img = EMERALD;
+                break;
+            case "Sapphire":
+                img = SAPPHIRE;
+                break;
+            case "Ruby":
+                img = RUBY;
+                break;
+            case "Closed":
+                img = CLOSED;
+                break;
+            case "Stone":
+                img = STONE;
+                break;
+            default:
+                img = OPEN;
+        }
+
+        return img;
+    }
+
 }

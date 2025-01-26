@@ -1,13 +1,9 @@
 package org.jewelhunt.ui;
 
 import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -25,12 +21,11 @@ public class ParametersView {
     private ComboBox<AiTypes> cbxAiOpponentTypes;
     private ComboBox<AiTypes> cbxAiSecondOpponentTypes;
     private CheckBox checkBox;
+    private TextField numberAiGames;
     private Controller controller;
-    private Game game;
 
     public void show(Controller controller) {
         this.controller = controller;
-        this.game = controller.getGame();
 
         stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -54,6 +49,7 @@ public class ParametersView {
     }
 
     private HBox paneBoardTypes() {
+        Game game = controller.getGame();
         Label labBoardTypes = new Label(controller.getMessage("ParametersView.labBoardTypes"));
         this.cbxBoardTypes = new ComboBox<>();
         cbxBoardTypes.setItems(FXCollections.observableArrayList( BoardTypes.values()));
@@ -66,6 +62,7 @@ public class ParametersView {
     }
 
     private HBox paneGameTypes() {
+        Game game = controller.getGame();
         Label labGameTypes = new Label(controller.getMessage("ParametersView.labGameTypes"));
 
         this.cbxGameTypes = new ComboBox<>();
@@ -83,13 +80,17 @@ public class ParametersView {
         cbxAiSecondOpponentTypes.setConverter(new AiTypesConverter(controller));
         cbxAiSecondOpponentTypes.setValue(game.getAiSecondOpponent().getType());
 
+        numberAiGames = new TextField();
+        numberAiGames.setText(String.valueOf(game.getNumberAiGames()));
+
         HBox paneGameTypes = new HBox();
         paneGameTypes.getStyleClass().add("hbox");
-        paneGameTypes.getChildren().addAll(labGameTypes, cbxGameTypes, cbxAiOpponentTypes, cbxAiSecondOpponentTypes);
+        paneGameTypes.getChildren().addAll(labGameTypes, cbxGameTypes, cbxAiOpponentTypes, cbxAiSecondOpponentTypes, numberAiGames);
         return paneGameTypes;
     }
 
     private HBox paneShowBestMoves() {
+        Game game = controller.getGame();
         Label label = new Label(controller.getMessage("ParametersView.showBestMoves"));
         this.checkBox = new CheckBox();
         this.checkBox.setSelected(game.isShowBestMoves());
@@ -120,7 +121,13 @@ public class ParametersView {
 
     private void btnOk_Clicked() {
         stage.close();
-        controller.newGame(cbxGameTypes.getValue(), cbxBoardTypes.getValue(), checkBox.isSelected());
+        controller.setParameters(cbxGameTypes.getValue(),
+                cbxBoardTypes.getValue(),
+                checkBox.isSelected(),
+                Integer.parseInt(numberAiGames.getText()),
+                cbxAiAssistantTypes.getValue(),
+                cbxAiOpponentTypes.getValue(),
+                cbxAiSecondOpponentTypes.getValue());
     }
 
     private void btnCancel_Clicked() {

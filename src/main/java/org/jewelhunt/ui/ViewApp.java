@@ -35,11 +35,6 @@ public class ViewApp extends Region {
         graphicsContext2D.drawImage(image, size_image * column, size_image * line);
     }
 
-    public void strokeText(String s, int size_image, int line, int column) {
-        GraphicsContext graphicsContext2D = canvas.getGraphicsContext2D();
-        graphicsContext2D.strokeText(s, size_image * column + (double) size_image / 2, size_image * line + (double) size_image / 2);
-    }
-
     public void strokeText(String s, double v, double v1) {
         GraphicsContext graphicsContext2D = canvas.getGraphicsContext2D();
         graphicsContext2D.strokeText(s, v, v1);

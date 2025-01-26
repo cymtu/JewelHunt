@@ -9,18 +9,17 @@ public class AiData {
     private static final int CELL_CONTAINS_JEWEL = 1;
     private int[][] cellState;
     private int[][] cellValues;
-    private double[][] calculation;
-    private BoardTypes boardTypes;
+    private final double[][] calculation;
+    private final BoardTypes boardTypes;
 
-    public void init(int[][] cellState, int[][] cellValues, BoardTypes boardTypes) {
-        this.cellState = cellState;
-        this.cellValues = cellValues;
+    public AiData(BoardTypes boardTypes) {
         this.boardTypes = boardTypes;
-        reset();
+        calculation = new double[boardTypes.getLines()][boardTypes.getColumns()];
     }
 
-    private void reset() {
-        calculation = new double[boardTypes.getLines()][boardTypes.getColumns()];
+    public void init(int[][] cellState, int[][] cellValues) {
+        this.cellState = cellState;
+        this.cellValues = cellValues;
     }
 
     public int getLines() {
@@ -33,10 +32,6 @@ public class AiData {
 
     public int getValueSumAllJewels() {
         return boardTypes.getValueSumAllJewels();
-    }
-
-    public boolean isCellOpen(int line, int column){
-        return cellState[line][column] != CELL_CLOSED;
     }
 
     public boolean isCellClose(int line, int column){

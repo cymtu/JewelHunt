@@ -1,49 +1,36 @@
 package org.jewelhunt.model;
 
-import org.jewelhunt.ai.AiData;
-import org.jewelhunt.ai.AiMin;
-import org.jewelhunt.ai.Solution;
+import org.jewelhunt.ai.*;
 
 public class Game {
-    private Board board;
-    private GameTypes gameTypes;
+    private static final int NUMBER_AI_GAMES = 1000;
+    private final Board board;
+    private final GameTypes gameTypes;
     private GameStatus status;
-    private BoardTypes boardTypes;
-    private final AiMin aiAssistant;
-    private final AiMin aiOpponent;
-    private final AiMin aiSecondOpponent;
-    private final AiData data;
+    private IAi aiAssistant;
+    private IAi aiOpponent;
+    private IAi aiSecondOpponent;
+    private AiData data;
     private int numberMoves;
     private int scorePlayer;
     private int scoreAi;
     private int scoreAiSecond;
     private boolean showBestMoves;
+    private int numberAiGames;
 
     public Game() {
-        data = new AiData();
-        aiAssistant = new AiMin(data);
-        aiOpponent = new AiMin(data);
-        aiSecondOpponent = new AiMin(data);
-        init();
+        this(GameTypes.PlayWithAI, BoardTypes.Small);
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
-    public void init() {
-        boardTypes = BoardTypes.Small;
-        gameTypes = GameTypes.PlayWithAI;
-        board = new Board(boardTypes);
-        showBestMoves = true;
-        newGame();
-    }
-
-    public void init(GameTypes gameTypes, BoardTypes boardTypes) {
-        this.boardTypes = boardTypes;
+    public Game(GameTypes gameTypes, BoardTypes boardTypes) {
         this.gameTypes = gameTypes;
-        board = new Board(boardTypes);
-        showBestMoves = true;
+        this.board = new Board(boardTypes);
+        this.data = new AiData(boardTypes);
+        this.showBestMoves = true;
+        this.numberAiGames = NUMBER_AI_GAMES;
+        this.aiAssistant = new AiAverage(data);
+        this.aiOpponent = new AiAverage(data);
+        this.aiSecondOpponent = new AiMin(data);
         newGame();
     }
 
@@ -61,11 +48,11 @@ public class Game {
     }
 
     public int getColumns() {
-        return boardTypes.getColumns();
+        return board.getBoardTypes().getColumns();
     }
 
     public int getLines() {
-        return boardTypes.getLines();
+        return board.getBoardTypes().getLines();
     }
 
     public void newGame() {
@@ -78,7 +65,10 @@ public class Game {
     }
 
     public void aiMove() {
-        data.init(board.getCellState(), board.getCellValues(), boardTypes);
+        if(isGameOver()) {
+            return;
+        }
+        data.init(board.getCellState(), board.getCellValues());
         Solution solution = aiOpponent.findSolution();
         board.openCell(solution.getLine(), solution.getColumns());
         numberMoves++;
@@ -86,7 +76,10 @@ public class Game {
     }
 
     public void aiMoveSecond() {
-        data.init(board.getCellState(), board.getCellValues(), boardTypes);
+        if(isGameOver()) {
+            return;
+        }
+        data.init(board.getCellState(), board.getCellValues());
         Solution solution = aiSecondOpponent.findSolution();
         board.openCell(solution.getLine(), solution.getColumns());
         numberMoves++;
@@ -152,36 +145,52 @@ public class Game {
     }
 
     public AiData getBestMoves() {
-        data.init(board.getCellState(), board.getCellValues(), boardTypes);
+        data.init(board.getCellState(), board.getCellValues());
         aiAssistant.calculation();
         return data;
     }
 
     public BoardTypes getBoardTypes() {
-        return boardTypes;
-    }
-
-    public void setGameTypes(GameTypes gameTypes) {
-        this.gameTypes = gameTypes;
-    }
-
-    public void setBoardTypes(BoardTypes boardTypes) {
-        this.boardTypes = boardTypes;
+        return board.getBoardTypes();
     }
 
     public int[] getMinMax() {
         return board.getMinMax();
     }
 
-    public AiMin getAiAssistant() {
+    public IAi getAiAssistant() {
         return aiAssistant;
     }
 
-    public AiMin getAiOpponent() {
+    public IAi getAiOpponent() {
         return aiOpponent;
     }
 
-    public AiMin getAiSecondOpponent() {
+    public IAi getAiSecondOpponent() {
         return aiSecondOpponent;
+    }
+
+    public void setAiAssistant(IAi aiAssistant) {
+        this.aiAssistant = aiAssistant;
+    }
+
+    public void setAiOpponent(IAi aiOpponent) {
+        this.aiOpponent = aiOpponent;
+    }
+
+    public void setAiSecondOpponent(IAi aiSecondOpponent) {
+        this.aiSecondOpponent = aiSecondOpponent;
+    }
+
+    public int getNumberAiGames() {
+        return numberAiGames;
+    }
+
+    public void setNumberAiGames(int numberAiGames) {
+        this.numberAiGames = numberAiGames;
+    }
+
+    public void setData(AiData data) {
+        this.data = data;
     }
 }

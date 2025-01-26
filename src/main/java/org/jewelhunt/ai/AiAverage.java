@@ -3,11 +3,11 @@ package org.jewelhunt.ai;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class AiMin implements IAi{
+public class AiAverage implements IAi{
     private final AiData data;
     private final Random random;
 
-    public AiMin(AiData data) {
+    public AiAverage(AiData data) {
         this.data = data;
         this.random = new Random();
     }
@@ -33,29 +33,33 @@ public class AiMin implements IAi{
         for(int c = 0; c < data.getColumns(); c++){
             for(int l = 0; l < data.getLines(); l++){
                 if(data.isNumberInCell(l, c)) {
-                    calculateMAX(l, c);
+                    calculateAverage(l, c);
                 }
             }
         }
 
         for(int c = 0; c < data.getColumns(); c++){
             for(int l = 0; l < data.getLines(); l++){
-                if(data.isNumberInCell(l, c)) {
-                    calculateMIN(l, c);
+                if(data.isCellClose(l, c)) {
+                    double valueCell = data.get(l, c);
+                    int openNumberInCell = getOpenNumberInCell(l, c);
+                    if(openNumberInCell > 0) {
+                        data.set(l, c, valueCell / openNumberInCell);
+                    }
                 }
             }
         }
     }
 
     public AiTypes getType() {
-        return AiTypes.Min;
+        return AiTypes.Average;
     }
 
     private double averageValueAllClosedCells() {
         return (double) data.sumNotOpenJewels() / data.closedCells();
     }
 
-    private void calculateMAX(int line, int column) {
+    private void calculateAverage(int line, int column) {
 
         int number = data.getValueCell(line, column);
         double numberClosedCells = getNumberClosedCells(line, column);
@@ -67,16 +71,18 @@ public class AiMin implements IAi{
         int min;
         // MAX
         for(int i = 0; i < data.getLines(); i++) {
-            if(data.isCellClose(i, column)) {
-                data.set(i, column, Math.max(data.get(i, column), value));
+            double valueCell = data.get(i, column);
+            if(data.isCellClose(i, column) & valueCell > 0 & value > 0) {
+                data.set(i, column, valueCell + value);
             } else {
                 data.set(i, column, 0);
             }
         }
 
         for(int i = 0; i < data.getColumns(); i++) {
-            if(data.isCellClose(line, i)) {
-                data.set(line, i, Math.max(data.get(line, i), value));
+            double valueCell = data.get(line, i);
+            if(data.isCellClose(line, i) & valueCell > 0 & value > 0) {
+                data.set(line, i, valueCell + value);
             } else {
                 data.set(line, i, 0);
             }
@@ -84,8 +90,9 @@ public class AiMin implements IAi{
 
         min = Math.min(line, column);
         for(int i = 0; (line- min + i) < data.getLines() && (column - min + i) < data.getColumns(); i++) {
-            if(data.isCellClose(line - min + i,column - min + i)) {
-                data.set(line - min + i, column - min + i, Math.max(data.get(line - min + i,column - min + i), value));
+            double valueCell = data.get(line - min + i,column - min + i);
+            if(data.isCellClose(line - min + i,column - min + i) & valueCell > 0 & value > 0) {
+                data.set(line - min + i, column - min + i, valueCell + value);
             } else {
                 data.set(line - min + i, column - min + i, 0);
             }
@@ -93,54 +100,9 @@ public class AiMin implements IAi{
 
         min = Math.min(data.getLines() - line - 1, column);
         for(int i = 0; (line + min - i) >= 0 && (column - min + i) < data.getColumns(); i++) {
-            if(data.isCellClose(line + min - i, column - min + i)) {
-                data.set(line + min - i, column - min + i, Math.max(data.get(line + min - i, column - min + i), value));
-            } else {
-                data.set(line + min - i, column - min + i, 0);
-            }
-        }
-    }
-
-    private void calculateMIN(int line, int column) {
-
-        int number = data.getValueCell(line, column);
-        double numberClosedCells = getNumberClosedCells(line, column);
-        double value = number;
-        if(numberClosedCells > 0) {
-            value = number / numberClosedCells;
-        }
-
-        int min;
-        // MIN
-        for(int i = 0; i < data.getLines(); i++) {
-            if(data.isCellClose(i, column)) {
-                data.set(i, column, Math.min(data.get(i, column), value));
-            } else {
-                data.set(i, column, 0);
-            }
-        }
-
-        for(int i = 0; i < data.getColumns(); i++) {
-            if(data.isCellClose(line, i)) {
-                data.set(line, i, Math.min(data.get(line, i), value));
-            } else {
-                data.set(line, i, 0);
-            }
-        }
-
-        min = Math.min(line, column);
-        for(int i = 0; (line- min + i) < data.getLines() && (column - min + i) < data.getColumns(); i++) {
-            if(data.isCellClose(line - min + i, column - min + i)) {
-                data.set(line - min + i, column - min + i, Math.min(data.get(line - min + i, column - min + i), value));
-            } else {
-                data.set(line - min + i, column - min + i, 0);
-            }
-        }
-
-        min = Math.min(data.getLines() - line - 1, column);
-        for(int i = 0; (line + min - i) >= 0 && (column - min + i) < data.getColumns(); i++) {
-            if(data.isCellClose(line + min - i, column - min + i)) {
-                data.set(line + min - i, column - min + i, Math.min(data.get(line + min - i, column - min + i), value));
+            double valueCell = data.get(line + min - i, column - min + i);
+            if(data.isCellClose(line + min - i, column - min + i) & valueCell > 0 & value > 0) {
+                data.set(line + min - i, column - min + i, valueCell + value);
             } else {
                 data.set(line + min - i, column - min + i, 0);
             }
@@ -172,6 +134,38 @@ public class AiMin implements IAi{
         min = Math.min(data.getLines() - line - 1, column);
         for(int i = 0; (line + min - i)>=0 && (column - min + i) < data.getColumns(); i++) {
             if(data.isCellClose(line + min - i, column - min + i)) {
+                value++;
+            }
+        }
+
+        return value;
+    }
+
+    private int getOpenNumberInCell(int line, int column) {
+        int value = 0;
+
+        for(int i = 0; i < data.getLines(); i++) {
+            if(data.isNumberInCell(i, column)) {
+                value++;
+            }
+        }
+
+        for(int i = 0; i < data.getColumns(); i++) {
+            if(data.isNumberInCell(line, i)) {
+                value++;
+            }
+        }
+
+        int min = Math.min(line, column);
+        for(int i = 0; (line- min + i) < data.getLines() && (column - min + i) < data.getColumns(); i++) {
+            if(data.isNumberInCell(line - min + i, column - min + i)) {
+                value++;
+            }
+        }
+
+        min = Math.min(data.getLines() - line - 1, column);
+        for(int i = 0; (line + min - i)>=0 && (column - min + i) < data.getColumns(); i++) {
+            if(data.isNumberInCell(line + min - i, column - min + i)) {
                 value++;
             }
         }

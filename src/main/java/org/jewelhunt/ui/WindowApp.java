@@ -13,12 +13,10 @@ public class WindowApp extends BorderPane {
     public static int SIZE_IMAGE = 64;
     private final ViewApp viewApp;
     private final BottomApp bottomApp;
-    private final Game game;
     private final Controller controller;
 
     public WindowApp(Controller controller) {
         this.controller = controller;
-        game = controller.getGame();
 
         MenuApp menuApp = new MenuApp(controller);
         setTop(menuApp);
@@ -32,6 +30,7 @@ public class WindowApp extends BorderPane {
     }
 
     private void setBottomText() {
+        Game game = controller.getGame();
         String s = "";
 
         if(game.getNumberMoves() == 0) {
@@ -57,12 +56,18 @@ public class WindowApp extends BorderPane {
         bottomApp.setText(s);
     }
 
+    public void setBottomText(String s) {
+        bottomApp.setText(s);
+    }
+
     public void newGame() {
+        Game game = controller.getGame();
         viewApp.setHeightCanvas(SIZE_IMAGE * game.getLines());
         viewApp.setWidthCanvas(SIZE_IMAGE * game.getColumns());
     }
 
     public void update() {
+        Game game = controller.getGame();
         for(int i = 0; i < game.getLines(); i++){
             for(int j = 0; j < game.getColumns(); j++){
                 drawCell(i, j);
@@ -114,6 +119,7 @@ public class WindowApp extends BorderPane {
     }
 
     private void drawCell(int line, int column) {
+        Game game = controller.getGame();
         if(game.isCellOpen(line, column)) {
             drawCellOpen(line, column);
         } else {
@@ -122,6 +128,7 @@ public class WindowApp extends BorderPane {
     }
 
     private void drawCellOpen(int line, int column) {
+        Game game = controller.getGame();
         viewApp.drawImage(controller.getImage("Open"), SIZE_IMAGE, line, column);
 
         if(!game.isEmpty(line, column)) {
@@ -131,6 +138,7 @@ public class WindowApp extends BorderPane {
     }
 
     private void drawCellClosed(int line, int column) {
+        Game game = controller.getGame();
         viewApp.drawImage(controller.getImage("Closed"), SIZE_IMAGE, line, column);
 
         if(game.isMark(line, column)) {

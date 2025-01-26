@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.jewelhunt.ai.*;
 import org.jewelhunt.model.BoardTypes;
 import org.jewelhunt.model.Game;
 import org.jewelhunt.model.GameTypes;
@@ -14,19 +15,21 @@ import org.jewelhunt.ui.WindowApp;
 import org.jewelhunt.utils.LoadImages;
 import org.jewelhunt.utils.ResourceMessage;
 
+import java.util.Objects;
+
 public class Controller {
-    private final Game game;
+    private Game game;
     private final WindowApp windowApp;
     private final Stage stage;
     private final ResourceMessage resourceMessage;
-    private String styleCSS;
+    private final String styleCSS;
 
     public Controller(Stage stage) {
         this.stage = stage;
         resourceMessage = new ResourceMessage();
         this.game = new Game();
         this.windowApp = new WindowApp(this);
-        this.styleCSS = getClass().getResource("/css/jewelhunt.css").toExternalForm();
+        this.styleCSS = Objects.requireNonNull(getClass().getResource("/css/jewelhunt.css")).toExternalForm();
         LoadImages.load();
         newGame();
     }
@@ -50,18 +53,20 @@ public class Controller {
 
     private void mouseClicked(int line, int column, MouseButton button){
 
-        if(game.getGameTypes() == GameTypes.GameOfArtificialOpponents) {
-            return;
-        }
-
         if(game.isGameOver()) {
+            if(button == MouseButton.PRIMARY) {
+                if(game.getGameTypes() == GameTypes.GameOfArtificialOpponents) {
+                    GameOfArtificialOpponents(game.getNumberAiGames());
+                }
+            }
+
             if(button == MouseButton.SECONDARY) {
                 newGame();
             }
             return;
         }
 
-        if(game.getBoard().isCellOpen(line, column)) {
+        if(game.isCellOpen(line, column)) {
             return;
         }
 
@@ -114,6 +119,38 @@ public class Controller {
 
     }
 
+    private void GameOfArtificialOpponents(int numberGames) {
+        int scoreAi = 0;
+        int scoreAiSecond = 0;
+        int deadHeat = 0;
+        for(int i = 0; i < numberGames; i++) {
+            game.newGame();
+            while (!game.isGameOver()) {
+                game.aiMove();
+                if(game.isGameOver()) {
+                    continue;
+                }
+                game.aiMoveSecond();
+            }
+            
+            if(game.getScoreAi() > game.getScoreAiSecond()) {
+                scoreAi++;
+            }
+
+            if(game.getScoreAi() < game.getScoreAiSecond()) {
+                scoreAiSecond++;
+            }
+
+            if(game.getScoreAi() == game.getScoreAiSecond()) {
+                deadHeat++;
+            }
+        }
+        windowApp.update();
+        String s = getMessage(game.getAiOpponent().getType().toString()) + " / " + getMessage(game.getAiSecondOpponent().getType().toString());
+        s = s + " : " + scoreAi + " / " + scoreAiSecond + " / " + deadHeat;
+        windowApp.setBottomText(s);
+    }
+
     public void showAbout() {
         AboutView.show(this);
     }
@@ -123,11 +160,16 @@ public class Controller {
         view.show(this);
     }
 
-    public void newGame(GameTypes gameTypes, BoardTypes boardTypes, boolean showBestMoves) {
-        game.setGameTypes(gameTypes);
-        game.setBoardTypes(boardTypes);
-        game.init(gameTypes, boardTypes);
+    public void setParameters(GameTypes gameTypes, BoardTypes boardTypes, boolean showBestMoves, int numberAiGames, AiTypes aiAssistant, AiTypes aiOpponent, AiTypes aiSecondOpponent) {
+        game = new Game(gameTypes, boardTypes);
         game.setShowBestMoves(showBestMoves);
+        game.setNumberAiGames(numberAiGames);
+
+        AiData data = new AiData(boardTypes);
+        game.setData(data);
+        game.setAiAssistant(AiTypes.ai(aiAssistant, data));
+        game.setAiOpponent(AiTypes.ai(aiOpponent, data));
+        game.setAiSecondOpponent(AiTypes.ai(aiSecondOpponent, data));
         newGame();
     }
 
@@ -136,38 +178,7 @@ public class Controller {
     }
 
     public Image getImage(String imgName) {
-        Image img;
-
-        switch (imgName) {
-            case "Nugget":
-                img = LoadImages.NUGGET;
-                break;
-            case "Amethyst":
-                img = LoadImages.AMETHYST;
-                break;
-            case "Chrysolite":
-                img = LoadImages.CHRYSOLITE;
-                break;
-            case "Emerald":
-                img = LoadImages.EMERALD;
-                break;
-            case "Sapphire":
-                img = LoadImages.SAPPHIRE;
-                break;
-            case "Ruby":
-                img = LoadImages.RUBY;
-                break;
-            case "Closed":
-                img = LoadImages.CLOSED;
-                break;
-            case "Stone":
-                img = LoadImages.STONE;
-                break;
-            default:
-                img = LoadImages.OPEN;
-        }
-
-        return img;
+        return LoadImages.getImage(imgName);
     }
 
     public String getStyleCSS() {

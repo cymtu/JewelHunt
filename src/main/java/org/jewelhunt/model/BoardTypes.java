@@ -65,7 +65,7 @@ public enum BoardTypes {
     }
 
     public int getValueSumAllJewels() {
-        int sum = 0;
+        int sum;
 
         sum = nuggets * Jewels.Nugget.getValue()
                 + amethysts * Jewels.Amethyst.getValue()
