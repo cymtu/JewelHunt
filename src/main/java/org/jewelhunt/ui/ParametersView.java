@@ -10,7 +10,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.jewelhunt.ai.AiTypes;
 import org.jewelhunt.controllers.Controller;
+import org.jewelhunt.gametypes.ServiceGame;
 import org.jewelhunt.model.*;
+import org.jewelhunt.gametypes.GameTypes;
 
 public class ParametersView {
     private Stage stage;
@@ -63,25 +65,26 @@ public class ParametersView {
 
     private HBox paneGameTypes() {
         Game game = controller.getGame();
+        ServiceGame service = controller.getServiceGame();
         Label labGameTypes = new Label(controller.getMessage("ParametersView.labGameTypes"));
 
         this.cbxGameTypes = new ComboBox<>();
         cbxGameTypes.setItems(FXCollections.observableArrayList(GameTypes.values()));
         cbxGameTypes.setConverter(new GameTypesConverter(controller));
-        cbxGameTypes.setValue(game.getGameTypes());
+        cbxGameTypes.setValue(controller.getGameTypes());
 
         this.cbxAiOpponentTypes = new ComboBox<>();
         cbxAiOpponentTypes.setItems(FXCollections.observableArrayList(AiTypes.values()));
         cbxAiOpponentTypes.setConverter(new AiTypesConverter(controller));
-        cbxAiOpponentTypes.setValue(game.getAiOpponent().getType());
+        cbxAiOpponentTypes.setValue(service.getAiOpponent().getType());
 
         this.cbxAiSecondOpponentTypes = new ComboBox<>();
         cbxAiSecondOpponentTypes.setItems(FXCollections.observableArrayList(AiTypes.values()));
         cbxAiSecondOpponentTypes.setConverter(new AiTypesConverter(controller));
-        cbxAiSecondOpponentTypes.setValue(game.getAiSecondOpponent().getType());
+        cbxAiSecondOpponentTypes.setValue(service.getAiSecondOpponent().getType());
 
         numberAiGames = new TextField();
-        numberAiGames.setText(String.valueOf(game.getNumberAiGames()));
+        numberAiGames.setText(String.valueOf(service.getNumberAiGames()));
 
         HBox paneGameTypes = new HBox();
         paneGameTypes.getStyleClass().add("hbox");
@@ -93,12 +96,12 @@ public class ParametersView {
         Game game = controller.getGame();
         Label label = new Label(controller.getMessage("ParametersView.showBestMoves"));
         this.checkBox = new CheckBox();
-        this.checkBox.setSelected(game.isShowBestMoves());
+        this.checkBox.setSelected(controller.isShowBestMoves());
 
         this.cbxAiAssistantTypes = new ComboBox<>();
         cbxAiAssistantTypes.setItems(FXCollections.observableArrayList(AiTypes.values()));
         cbxAiAssistantTypes.setConverter(new AiTypesConverter(controller));
-        cbxAiAssistantTypes.setValue(game.getAiAssistant().getType());
+        cbxAiAssistantTypes.setValue(controller.getAiAssistant().getType());
 
         HBox hBox = new HBox();
         hBox.getStyleClass().add("hbox");

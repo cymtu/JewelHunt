@@ -1,5 +1,7 @@
 package org.jewelhunt.ai;
 
+import org.jewelhunt.model.BoardTypes;
+
 import java.util.Objects;
 
 public enum AiTypes {
@@ -17,13 +19,13 @@ public enum AiTypes {
         return name;
     }
 
-    public static IAi ai(AiTypes aiTypes, AiData data) {
+    public static IAi ai(AiTypes aiTypes, BoardTypes boardTypes) {
         IAi ai;
 
         if (Objects.requireNonNull(aiTypes) == AiTypes.Average) {
-            ai = new AiAverage(data);
+            ai = new AiAverage(boardTypes);
         } else {
-            ai = new AiMin(data);
+            ai = new AiMin(boardTypes);
         }
 
         return ai;

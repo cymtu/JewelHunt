@@ -2,7 +2,7 @@ package org.jewelhunt.ui;
 
 import javafx.util.StringConverter;
 import org.jewelhunt.controllers.Controller;
-import org.jewelhunt.model.GameTypes;
+import org.jewelhunt.gametypes.GameTypes;
 
 public class GameTypesConverter extends StringConverter<GameTypes> {
 

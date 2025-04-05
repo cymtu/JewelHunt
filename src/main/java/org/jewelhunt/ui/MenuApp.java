@@ -35,7 +35,9 @@ public class MenuApp extends MenuBar {
     }
 
     private MenuItem menuItemStatistics() {
-        return new MenuItem(controller.getMessage("MenuApp.Statistics"));
+        MenuItem menuItem = new MenuItem(controller.getMessage("MenuApp.Records"));
+        menuItem.setOnAction(e -> controller.showStatistics());
+        return menuItem;
     }
 
     private MenuItem menuItemParameters() {

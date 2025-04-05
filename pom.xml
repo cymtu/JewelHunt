@@ -4,18 +4,42 @@
     <groupId>org.jewelhunt</groupId>
     <artifactId>JewelHunt</artifactId>
     <version>1.0</version>
+
+    <developers>
+        <developer>
+            <id>cymtu</id>
+            <name>Barabanov A.V.</name>
+            <email>cymtu@yandex.ru</email>
+            <properties>
+                <active>true</active>
+            </properties>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>13</version>
         </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.48.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.10.2</version>
+        </dependency>
     </dependencies>
+
     <build>
         <resources>
             <resource>
@@ -63,6 +87,18 @@
                 <!-- optional -->
                 <configuration>
                     <showDetails>true</showDetails>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.jewelhunt.App</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

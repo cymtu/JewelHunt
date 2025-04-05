@@ -1,14 +1,17 @@
 package org.jewelhunt.ai;
 
+import org.jewelhunt.model.BoardTypes;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class AiMin implements IAi{
     private final AiData data;
     private final Random random;
+    private int score;
 
-    public AiMin(AiData data) {
-        this.data = data;
+    public AiMin(BoardTypes boardTypes) {
+        this.data = new AiData(boardTypes);
         this.random = new Random();
     }
 
@@ -49,6 +52,26 @@ public class AiMin implements IAi{
 
     public AiTypes getType() {
         return AiTypes.Min;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void addScore(int value) {
+        this.score += value;
+    }
+
+    public void resetScore() {
+        this.score = 0;
+    }
+
+    public AiData getData() {
+        return data;
+    }
+
+    public void init(int[][] CellState, int[][] CellValues) {
+        data.init(CellState, CellValues);
     }
 
     private double averageValueAllClosedCells() {

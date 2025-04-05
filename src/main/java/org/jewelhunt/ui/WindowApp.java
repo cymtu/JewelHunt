@@ -6,8 +6,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.jewelhunt.ai.AiData;
 import org.jewelhunt.controllers.Controller;
+import org.jewelhunt.gametypes.ServiceGame;
 import org.jewelhunt.model.Game;
-import org.jewelhunt.model.GameTypes;
+import org.jewelhunt.gametypes.GameTypes;
 
 public class WindowApp extends BorderPane {
     public static int SIZE_IMAGE = 64;
@@ -31,6 +32,7 @@ public class WindowApp extends BorderPane {
 
     private void setBottomText() {
         Game game = controller.getGame();
+        ServiceGame service = controller.getServiceGame();
         String s = "";
 
         if(game.getNumberMoves() == 0) {
@@ -41,16 +43,16 @@ public class WindowApp extends BorderPane {
             s = controller.getMessage("WindowApp.GameOver") ;
         }
 
-        if(game.getGameTypes() == GameTypes.Single) {
-            s += controller.getMessage("WindowApp.Move") + game.getNumberMoves() + " " + controller.getMessage("WindowApp.Score") + game.getScorePlayer();
+        if(controller.getGameTypes() == GameTypes.Single) {
+            s += controller.getMessage("WindowApp.Move") + game.getNumberMoves() + " " + controller.getMessage("WindowApp.Score") + service.getScorePlayer();
         }
 
-        if(game.getGameTypes() == GameTypes.PlayWithAI) {
-            s += controller.getMessage("WindowApp.Move") + game.getNumberMoves() + " " + controller.getMessage("WindowApp.Score") + game.getScorePlayer() + "/" + game.getScoreAi();
+        if(controller.getGameTypes() == GameTypes.PlayWithAI) {
+            s += controller.getMessage("WindowApp.Move") + game.getNumberMoves() + " " + controller.getMessage("WindowApp.Score") + service.getScorePlayer() + "/" + service.getScoreAi();
         }
 
-        if(game.getGameTypes() == GameTypes.GameOfArtificialOpponents) {
-            s += controller.getMessage("WindowApp.Move") + game.getNumberMoves() + " " + controller.getMessage("WindowApp.Score") + game.getScoreAi() + "/" + game.getScoreAiSecond();
+        if(controller.getGameTypes() == GameTypes.GameOfArtificialOpponents) {
+            s += controller.getMessage("WindowApp.Move") + game.getNumberMoves() + " " + controller.getMessage("WindowApp.Score") + service.getScoreAi() + "/" + service.getScoreAiSecond();
         }
 
         bottomApp.setText(s);
@@ -102,8 +104,8 @@ public class WindowApp extends BorderPane {
 
         viewApp.setStroke(Color.BLACK);
 
-        if (game.isShowBestMoves()) {
-            AiData data = game.getBestMoves();
+        if (controller.isShowBestMoves()) {
+            AiData data = controller.getBestMoves();
             for(int i = 0; i < game.getLines(); i++){
                 for(int j = 0; j < game.getColumns(); j++){
                     if(!game.isCellOpen(i, j) & !game.isMark(i, j)) {
