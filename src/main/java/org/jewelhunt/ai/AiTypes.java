@@ -1,9 +1,10 @@
 package org.jewelhunt.ai;
 
-import org.jewelhunt.model.BoardTypes;
-
-import java.util.Objects;
-
+/**
+ * Перечисление типов ИИ
+ * @author Барабанов А.В.
+ * @version 1.0.1
+ */
 public enum AiTypes {
     Min("AiTypes.Min"),
     Average("AiType.Average");
@@ -18,17 +19,4 @@ public enum AiTypes {
     public String toString() {
         return name;
     }
-
-    public static IAi ai(AiTypes aiTypes, BoardTypes boardTypes) {
-        IAi ai;
-
-        if (Objects.requireNonNull(aiTypes) == AiTypes.Average) {
-            ai = new AiAverage(boardTypes);
-        } else {
-            ai = new AiMin(boardTypes);
-        }
-
-        return ai;
-    }
-
 }

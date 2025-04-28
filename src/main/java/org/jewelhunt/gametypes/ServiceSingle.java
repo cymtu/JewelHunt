@@ -9,11 +9,11 @@ import org.jewelhunt.ui.WindowApp;
 public class ServiceSingle implements ServiceGame {
 
     private final Controller controller;
-    private Player player;
+    private Human human;
 
     public ServiceSingle(Controller controller) {
         this.controller = controller;
-        this.player = new Player();
+        this.human = new Human();
     }
 
     @Override
@@ -49,12 +49,12 @@ public class ServiceSingle implements ServiceGame {
 
     @Override
     public int getScorePlayer() {
-        return player.getScore();
+        return human.getScore();
     }
 
     @Override
     public void resetScore() {
-        player.resetScore();
+        human.resetScore();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ServiceSingle implements ServiceGame {
 
     public void movePlayer(int line, int column) {
         Game game = controller.getGame();
-        game.move(line, column, player);
+        game.move(line, column, human);
     }
 
 

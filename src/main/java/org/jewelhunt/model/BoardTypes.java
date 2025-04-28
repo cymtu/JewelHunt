@@ -1,5 +1,10 @@
 package org.jewelhunt.model;
 
+/**
+ * Перечисление типов размеров досок в игре, приведены размеры доски и её заполнения камнями
+ * @author Барабанов А.В.
+ * @version 1.0.1
+ */
 public enum BoardTypes {
     Small(9, 9, 8, 4, 2, 1, 0, 0, "BoardTypes.Small"),
     Medium(11, 15, 16, 8, 4, 2, 1, 0, "BoardTypes.Medium"),

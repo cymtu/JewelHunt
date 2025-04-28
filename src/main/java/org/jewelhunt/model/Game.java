@@ -1,6 +1,6 @@
 package org.jewelhunt.model;
 
-import org.jewelhunt.gametypes.Score;
+import org.jewelhunt.gametypes.Player;
 
 public class Game {
     private final Board board;
@@ -39,10 +39,10 @@ public class Game {
         board.init();
     }
 
-    public void move(int line, int column, Score score) {
+    public void move(int line, int column, Player player) {
         board.openCell(line, column);
         numberMoves++;
-        score.addScore(board.getJewel(line, column).getValue());
+        player.addScore(board.getJewel(line, column).getValue());
     }
 
     public void mark(int line, int column) {

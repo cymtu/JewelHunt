@@ -1,5 +1,10 @@
 package org.jewelhunt.model;
 
+/**
+ * Класс Ячейки игральной доски. Хранить состояние, данные по камню и сумму значений не открытых камней
+ * @author Барабанов А.В.
+ * @version 1.0.1
+ */
 public class Cell {
     private Jewels jewels;
     private boolean isOpen;

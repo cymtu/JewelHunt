@@ -1,8 +1,13 @@
 package org.jewelhunt.ai;
 
-import org.jewelhunt.gametypes.Score;
+import org.jewelhunt.gametypes.Player;
 
-public interface IAi extends Score {
+/**
+ * Интерфейс для всех реализации ИИ
+ * @author Барабанов А.В.
+ * @version 1.0.1
+ */
+public interface IAi extends Player {
     Solution findSolution();
     void calculation();
     AiTypes getType();

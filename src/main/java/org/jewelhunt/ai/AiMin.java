@@ -5,7 +5,7 @@ import org.jewelhunt.model.BoardTypes;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class AiMin implements IAi{
+public class AiMin implements IAi {
     private final AiData data;
     private final Random random;
     private int score;

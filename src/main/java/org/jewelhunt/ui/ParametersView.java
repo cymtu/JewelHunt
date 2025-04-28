@@ -1,6 +1,9 @@
 package org.jewelhunt.ui;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -72,24 +75,57 @@ public class ParametersView {
         cbxGameTypes.setItems(FXCollections.observableArrayList(GameTypes.values()));
         cbxGameTypes.setConverter(new GameTypesConverter(controller));
         cbxGameTypes.setValue(controller.getGameTypes());
+        cbxGameTypes.setOnAction(e -> getActionGameTypes());
 
         this.cbxAiOpponentTypes = new ComboBox<>();
         cbxAiOpponentTypes.setItems(FXCollections.observableArrayList(AiTypes.values()));
         cbxAiOpponentTypes.setConverter(new AiTypesConverter(controller));
-        cbxAiOpponentTypes.setValue(service.getAiOpponent().getType());
+        if (controller.getGameTypes() == GameTypes.PlayWithAI || controller.getGameTypes() == GameTypes.GameOfArtificialOpponents) {
+            cbxAiOpponentTypes.setValue(service.getAiOpponent().getType());
+        } else {
+            cbxAiOpponentTypes.setValue(AiTypes.Min);
+            cbxAiOpponentTypes.setVisible(false);
+        }
 
         this.cbxAiSecondOpponentTypes = new ComboBox<>();
         cbxAiSecondOpponentTypes.setItems(FXCollections.observableArrayList(AiTypes.values()));
         cbxAiSecondOpponentTypes.setConverter(new AiTypesConverter(controller));
-        cbxAiSecondOpponentTypes.setValue(service.getAiSecondOpponent().getType());
 
         numberAiGames = new TextField();
-        numberAiGames.setText(String.valueOf(service.getNumberAiGames()));
+
+        if (controller.getGameTypes() == GameTypes.GameOfArtificialOpponents) {
+            cbxAiSecondOpponentTypes.setValue(service.getAiSecondOpponent().getType());
+            numberAiGames.setText(String.valueOf(service.getNumberAiGames()));
+        } else {
+            cbxAiSecondOpponentTypes.setVisible(false);
+            cbxAiSecondOpponentTypes.setValue(AiTypes.Min);
+            numberAiGames.setVisible(false);
+        }
 
         HBox paneGameTypes = new HBox();
         paneGameTypes.getStyleClass().add("hbox");
         paneGameTypes.getChildren().addAll(labGameTypes, cbxGameTypes, cbxAiOpponentTypes, cbxAiSecondOpponentTypes, numberAiGames);
         return paneGameTypes;
+    }
+
+    private void getActionGameTypes() {
+        if(cbxGameTypes.getValue() == GameTypes.Single) {
+            cbxAiOpponentTypes.setVisible(false);
+            cbxAiSecondOpponentTypes.setVisible(false);
+            numberAiGames.setVisible(false);
+        }
+
+        if(cbxGameTypes.getValue() == GameTypes.PlayWithAI) {
+            cbxAiOpponentTypes.setVisible(true);
+            cbxAiSecondOpponentTypes.setVisible(false);
+            numberAiGames.setVisible(false);
+        }
+
+        if(cbxGameTypes.getValue() == GameTypes.GameOfArtificialOpponents) {
+            cbxAiOpponentTypes.setVisible(true);
+            cbxAiSecondOpponentTypes.setVisible(true);
+            numberAiGames.setVisible(true);
+        }
     }
 
     private HBox paneShowBestMoves() {

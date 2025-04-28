@@ -1,24 +1,12 @@
 package org.jewelhunt.gametypes;
 
-public class Player implements Score {
-    private int score;
-
-    public Player() {
-        this.score = 0;
-    }
-
-    @Override
-    public int getScore() {
-        return score;
-    }
-
-    @Override
-    public void addScore(int value) {
-        this.score += value;
-    }
-
-    @Override
-    public void resetScore() {
-        score = 0;
-    }
+/**
+ * Интерфейс для всех игроков
+ * @author Барабанов А.В.
+ * @version 1.0.1
+ */
+public interface Player {
+    public int getScore();
+    public void addScore(int value);
+    public void resetScore();
 }

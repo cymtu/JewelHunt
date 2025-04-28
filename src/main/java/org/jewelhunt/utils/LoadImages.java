@@ -5,6 +5,11 @@ import javafx.scene.image.Image;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * Класс обеспечивает загрузку и хранение изображений для игры
+ * @author Барабанов А.В.
+ * @version 1.0.1
+ */
 public class LoadImages {
     public static Image CLOSED;
     public static Image OPEN;
@@ -28,17 +33,11 @@ public class LoadImages {
         STONE = loadImage("stone");
     }
 
-    public static Image loadImage(String name) {
-        String filename = "/images/" + name + ".png";
-        Image image;
-        try {
-            image = new Image(Objects.requireNonNull(LoadImages.class.getResource(filename)).openStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return image;
-    }
-
+    /**
+     * Возращает картинку по её наименованию
+     * @param imgName Наименование картинки, которую надо вернуть
+     * @return Картинка
+     */
     public static Image getImage(String imgName) {
         Image img;
 
@@ -73,5 +72,15 @@ public class LoadImages {
 
         return img;
     }
-
+    
+    private static Image loadImage(String name) {
+        String filename = "/images/" + name + ".png";
+        Image image;
+        try {
+            image = new Image(Objects.requireNonNull(LoadImages.class.getResource(filename)).openStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return image;
+    }
 }

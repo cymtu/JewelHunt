@@ -7,11 +7,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.jewelhunt.ai.*;
 import org.jewelhunt.dao.JewelHuntDao;
-import org.jewelhunt.gametypes.ServiceGame;
-import org.jewelhunt.gametypes.ServicePlayWithAI;
+import org.jewelhunt.gametypes.*;
 import org.jewelhunt.model.BoardTypes;
 import org.jewelhunt.model.Game;
-import org.jewelhunt.gametypes.GameTypes;
 import org.jewelhunt.ui.AboutView;
 import org.jewelhunt.ui.ParametersView;
 import org.jewelhunt.ui.RecordsView;
@@ -116,14 +114,40 @@ public class Controller {
     public void setParameters(GameTypes gameTypes, BoardTypes boardTypes, boolean showBestMoves, int numberAiGames, AiTypes aiAssistant, AiTypes aiOpponent, AiTypes aiSecondOpponent) {
         game = new Game(boardTypes);
         setGameTypes(gameTypes);
-        serviceGame = GameTypes.getService(this);
+        serviceGame = getService();
         setShowBestMoves(showBestMoves);
         serviceGame.setNumberAiGames(numberAiGames);
 
-        setAiAssistant(AiTypes.ai(aiAssistant, boardTypes));
-        serviceGame.setAiOpponent(AiTypes.ai(aiOpponent, boardTypes));
-        serviceGame.setAiSecondOpponent(AiTypes.ai(aiSecondOpponent, boardTypes));
+        setAiAssistant(ai(aiAssistant, boardTypes));
+        serviceGame.setAiOpponent(ai(aiOpponent, boardTypes));
+        serviceGame.setAiSecondOpponent(ai(aiSecondOpponent, boardTypes));
         newGame();
+    }
+
+    private IAi ai(AiTypes aiTypes, BoardTypes boardTypes) {
+        IAi ai;
+
+        if (Objects.requireNonNull(aiTypes) == AiTypes.Average) {
+            ai = new AiAverage(boardTypes);
+        } else {
+            ai = new AiMin(boardTypes);
+        }
+
+        return ai;
+    }
+
+    private ServiceGame getService() {
+        ServiceGame service;
+
+        if (getGameTypes() == GameTypes.Single) {
+            service = new ServiceSingle(this);
+        } else if (getGameTypes() == GameTypes.PlayWithAI) {
+            service = new ServicePlayWithAI(this);
+        } else {
+            service = new ServiceGameOfArtificialOpponents(this);
+        }
+
+        return service;
     }
 
     public Game getGame() {

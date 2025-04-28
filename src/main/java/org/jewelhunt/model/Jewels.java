@@ -1,5 +1,10 @@
 package org.jewelhunt.model;
 
+/**
+ * Перечисление драгоценных камней, используемых в игре
+ * @author Барабанов А.В.
+ * @version 1.0.1
+ */
 public enum Jewels {
     Empty(0, "Empty"),
     Nugget(1, "Nugget"),
@@ -17,10 +22,18 @@ public enum Jewels {
         this.name = name;
     }
 
+    /**
+     * Возращает ценность камня
+     * @return Значение ценности
+     */
     public int getValue() {
         return value;
     }
 
+    /**
+     * Возвращает наименование камня
+     * @return Наименование камня
+     */
     public String getName() {
         return name;
     }

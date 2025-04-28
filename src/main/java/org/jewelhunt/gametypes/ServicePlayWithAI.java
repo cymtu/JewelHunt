@@ -12,13 +12,13 @@ import org.jewelhunt.ui.WindowApp;
 public class ServicePlayWithAI implements ServiceGame {
 
     private final Controller controller;
-    private Player player;
+    private Human human;
 
     private IAi aiOpponent;
 
     public ServicePlayWithAI(Controller controller) {
         this.controller = controller;
-        this.player = new Player();
+        this.human = new Human();
         this.aiOpponent = new AiMin(controller.getGame().getBoardTypes());
     }
 
@@ -76,15 +76,15 @@ public class ServicePlayWithAI implements ServiceGame {
 
     public void movePlayer(int line, int column) {
         Game game = controller.getGame();
-        game.move(line, column, player);
+        game.move(line, column, human);
     }
 
     public int getScorePlayer() {
-        return player.getScore();
+        return human.getScore();
     }
 
     public void resetScore() {
-        player.resetScore();
+        human.resetScore();
         aiOpponent.resetScore();
     }
 
